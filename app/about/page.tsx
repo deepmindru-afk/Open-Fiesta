@@ -20,7 +20,7 @@ export const metadata: Metadata = {
       "Learn about Open Fiesta, the AI chat that lets you compare 300+ models in one place.",
     url: "https://openfiesta.app/about",
     siteName: "Open Fiesta",
-    images: [{ url: "/brand.png", width: 1200, height: 630, alt: "Open Fiesta" }],
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Open Fiesta" }],
     type: "website",
   },
   twitter: {
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     title: "About — Open Fiesta",
     description:
       "Learn about Open Fiesta, the AI chat that lets you compare 300+ models in one place.",
-    images: ["/brand.png"],
+    images: ["/og.png"],
   },
 }
 

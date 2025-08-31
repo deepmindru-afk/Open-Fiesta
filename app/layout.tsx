@@ -42,7 +42,7 @@ export const metadata: Metadata = {
       "Open Fiesta lets you chat with 300+ AI models—OpenAI, Gemini, Claude, Perplexity, DeepSeek, Grok, and more—in one place. Compare responses and stay in flow.",
     images: [
       {
-        url: "/brand.png",
+        url: "/og.png",
         width: 1200,
         height: 630,
         alt: "Open Fiesta",
@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     title: "Open Fiesta – AI Chat Assistant",
     description:
       "Open Fiesta lets you chat with 200+ AI models—OpenAI, Gemini, Claude, Perplexity, DeepSeek, Grok, and more—in one place. Compare responses and stay in flow.",
-    images: ["/brand.png"],
+    images: ["/og.png"],
   },
 }
 
