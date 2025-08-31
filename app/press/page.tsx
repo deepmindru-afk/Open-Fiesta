@@ -18,14 +18,14 @@ export const metadata: Metadata = {
     description: "Press kit, logos, and boilerplate for Open Fiesta.",
     url: "https://openfiesta.app/press",
     siteName: "Open Fiesta",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Open Fiesta" }],
+    images: [{ url: "https://openfiesta.app/og.png", width: 1200, height: 630, alt: "Open Fiesta" }],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "Press — Open Fiesta",
     description: "Press kit, logos, and boilerplate for Open Fiesta.",
-    images: ["/og.png"],
+    images: ["https://openfiesta.app/og.png"],
   },
 }
 
