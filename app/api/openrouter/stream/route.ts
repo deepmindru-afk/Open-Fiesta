@@ -134,17 +134,8 @@ export async function POST(req: NextRequest) {
     const aborter = new AbortController();
     const timeoutMs = 60000; // 60s
     const timeoutId = setTimeout(() => aborter.abort(), timeoutMs);
-    let retryTimeoutId: number | undefined;
 
-    // SSE response headers
-    const headers = new Headers({
-      'Content-Type': 'text/event-stream; charset=utf-8',
-      'Cache-Control': 'no-cache, no-transform',
-      Connection: 'keep-alive',
-      'X-Accel-Buffering': 'no',
-    });
-
-    let upstream = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    const upstream = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${apiKey}`,
@@ -156,69 +147,12 @@ export async function POST(req: NextRequest) {
       signal: aborter.signal,
     });
 
-    // Model 404 fallback alias map
-    const MODEL_FALLBACKS: Record<string, string> = {
-      'anthropic/claude-sonnet-4': 'anthropic/claude-3.7-sonnet',
-    };
-
-    // If 404 model not found, try a single fallback retry
-    if (!upstream.ok && upstream.status === 404) {
-      const errTextTry = await upstream.text().catch(() => '');
-      if (/model not found/i.test(errTextTry)) {
-        const m = String(model || '');
-        const fb = MODEL_FALLBACKS[m];
-        if (fb) {
-          try {
-            const retryBody = { ...body, model: fb };
-            clearTimeout(timeoutId);
-            // new controller and timer
-            const retryAborter = new AbortController();
-            retryTimeoutId = setTimeout(() => retryAborter.abort(), timeoutMs) as unknown as number;
-            try {
-              const retryResp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                  Authorization: `Bearer ${apiKey}`,
-                  'HTTP-Referer': referer || 'http://localhost',
-                  'X-Title': title || 'Open Source Fiesta',
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(retryBody),
-                signal: retryAborter.signal,
-              });
-              if (retryResp.ok && retryResp.body) {
-                // Adopt retry stream
-                upstream = retryResp;
-                // we'll clear retryTimeoutId when the stream completes
-              } else {
-                // Return SSE error including fallback failure
-                const enc = new TextEncoder();
-                const stream = new ReadableStream({
-                  start(controller) {
-                    const msg = `This model is currently unavailable on OpenRouter (404 model not found). Tried fallback to ${fb} but it also failed.`;
-                    controller.enqueue(enc.encode(sseEncode({ error: msg, code: retryResp.status, provider: 'openrouter', usedKeyType })));
-                    controller.enqueue(enc.encode('data: [DONE]\n\n'));
-                    controller.close();
-                  },
-                });
-                return new Response(stream, { status: 200, headers });
-              }
-            } catch {
-              const enc = new TextEncoder();
-              const stream = new ReadableStream({
-                start(controller) {
-                  const msg = 'This model is currently unavailable on OpenRouter (404 model not found). A fallback attempt was unsuccessful.';
-                  controller.enqueue(enc.encode(sseEncode({ error: msg, code: 404, provider: 'openrouter', usedKeyType })));
-                  controller.enqueue(enc.encode('data: [DONE]\n\n'));
-                  controller.close();
-                },
-              });
-              return new Response(stream, { status: 200, headers });
-            }
-          } catch {}
-        }
-      }
-    }
+    const headers = new Headers({
+      'Content-Type': 'text/event-stream; charset=utf-8',
+      'Cache-Control': 'no-cache, no-transform',
+      Connection: 'keep-alive',
+      'X-Accel-Buffering': 'no',
+    });
 
     if (!upstream.ok || !upstream.body) {
       const errText = await upstream.text().catch(() => '');
@@ -232,10 +166,9 @@ export async function POST(req: NextRequest) {
           const friendly402 = isGLMPaid
             ? 'The model GLM 4.5 Air is a paid model on OpenRouter. Please add your own OpenRouter API key with credit, or select the FREE pool variant "GLM 4.5 Air (FREE)".'
             : 'Provider returned 402 (payment required / insufficient credit). Add your own OpenRouter API key with credit, or pick a free model variant if available.';
-          const detail = errText ? ` Details: ${errText}` : '';
           const payload =
             code === 402
-              ? { error: `${friendly402}${detail}`.trim(), code, provider: 'openrouter', usedKeyType }
+              ? { error: friendly402, code, provider: 'openrouter', usedKeyType }
               : { error: errText || 'Upstream error', code, provider: 'openrouter', usedKeyType };
           controller.enqueue(new TextEncoder().encode(sseEncode(payload)));
           controller.enqueue(new TextEncoder().encode('data: [DONE]\n\n'));
@@ -271,75 +204,77 @@ export async function POST(req: NextRequest) {
 
     const stream = new ReadableStream<Uint8Array>({
       start(controller) {
-        // send initial meta
+        // Send a small meta event
         controller.enqueue(encoder.encode(sseEncode({ provider: 'openrouter', usedKeyType })));
-        const push = async () => {
+
+        const push = async (): Promise<void> => {
           try {
-            const { value, done } = await reader.read();
+            const { done, value } = await reader.read();
             if (done) {
               clearTimeout(timeoutId);
-              if (retryTimeoutId) clearTimeout(retryTimeoutId);
               controller.enqueue(encoder.encode('data: [DONE]\n\n'));
               controller.close();
               return;
             }
             buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split('\n');
-            buffer = lines.pop() ?? '';
-            for (const raw of lines) {
-              const line = raw.trim();
-              if (!line) continue;
-              if (line.startsWith('data:')) {
-                const payload = line.slice(5).trim();
-                if (payload === '[DONE]') {
-                  clearTimeout(timeoutId);
-                  if (retryTimeoutId) clearTimeout(retryTimeoutId);
-                  controller.enqueue(encoder.encode('data: [DONE]\n\n'));
-                  controller.close();
-                  return;
+            const parts = buffer.split('\n\n');
+            buffer = parts.pop() || '';
+            for (const part of parts) {
+              const line = part.trim();
+              if (!line.startsWith('data:')) continue;
+              const payload = line.slice(5).trim();
+              if (payload === '[DONE]') {
+                clearTimeout(timeoutId);
+                controller.enqueue(encoder.encode('data: [DONE]\n\n'));
+                controller.close();
+                return;
+              }
+              try {
+                const json = JSON.parse(payload);
+                const delta = json?.choices?.[0]?.delta;
+                let text = '';
+                if (typeof delta?.content === 'string') {
+                  text = delta.content;
+                } else if (Array.isArray(delta?.content)) {
+                  text = (delta.content as unknown[])
+                    .map((c: unknown) => {
+                      if (!c) return '';
+                      if (typeof c === 'string') return c;
+                      const obj = c as { text?: unknown; content?: unknown; value?: unknown };
+                      if (typeof obj.text === 'string') return obj.text;
+                      if (typeof obj.content === 'string') return obj.content;
+                      if (typeof obj.value === 'string') return obj.value;
+                      return '';
+                    })
+                    .filter(Boolean)
+                    .join('');
                 }
-                try {
-                  const json = JSON.parse(payload);
-                  const delta = json?.choices?.[0]?.delta;
-                  let text = '';
-                  if (typeof delta?.content === 'string') {
-                    text = delta.content;
-                  } else if (Array.isArray(delta?.content)) {
-                    text = (delta.content as unknown[])
-                      .map((c: unknown) => {
-                        if (!c) return '';
-                        if (typeof c === 'string') return c;
-                        const obj = c as { text?: unknown; content?: unknown; value?: unknown };
-                        if (typeof obj.text === 'string') return obj.text;
-                        if (typeof obj.content === 'string') return obj.content;
-                        if (typeof obj.value === 'string') return obj.value;
-                        return '';
-                      })
-                      .filter(Boolean)
-                      .join('');
-                  }
-                  if (text) {
-                    const cleaned = sanitizeDelta(text);
-                    controller.enqueue(encoder.encode(sseEncode({ delta: cleaned })));
-                  }
-                  if (json?.error) {
-                    const code = json.error?.code;
-                    const isGLMPaid =
-                      code === 402 &&
-                      typeof model === 'string' &&
-                      /z-ai\s*\/\s*glm-4\.5-air(?!:free)/i.test(model);
-                    const friendly402 = isGLMPaid
-                      ? 'The model GLM 4.5 Air is a paid model on OpenRouter. Please add your own OpenRouter API key with credit, or select the FREE pool variant "GLM 4.5 Air (FREE)".'
-                      : 'Provider returned 402 (payment required / insufficient credit). Add your own OpenRouter API key with credit, or pick a free model variant if available.';
-                    const out =
-                      code === 402
-                        ? { error: friendly402, code, provider: 'openrouter', usedKeyType }
-                        : { error: json.error?.message || 'error', code, provider: 'openrouter', usedKeyType };
-                    controller.enqueue(encoder.encode(sseEncode(out)));
-                  }
-                } catch {
-                  // ignore parse errors
+                if (text) {
+                  const cleaned = sanitizeDelta(text);
+                  controller.enqueue(encoder.encode(sseEncode({ delta: cleaned })));
                 }
+                if (json?.error) {
+                  const code = json.error?.code;
+                  const isGLMPaid =
+                    code === 402 &&
+                    typeof model === 'string' &&
+                    /z-ai\s*\/\s*glm-4\.5-air(?!:free)/i.test(model);
+                  const friendly402 = isGLMPaid
+                    ? 'The model GLM 4.5 Air is a paid model on OpenRouter. Please add your own OpenRouter API key with credit, or select the FREE pool variant "GLM 4.5 Air (FREE)".'
+                    : 'Provider returned 402 (payment required / insufficient credit). Add your own OpenRouter API key with credit, or pick a free model variant if available.';
+                  const payload =
+                    code === 402
+                      ? { error: friendly402, code, provider: 'openrouter', usedKeyType }
+                      : {
+                          error: json.error?.message || 'error',
+                          code,
+                          provider: 'openrouter',
+                          usedKeyType,
+                        };
+                  controller.enqueue(encoder.encode(sseEncode(payload)));
+                }
+              } catch {
+                // ignore parse errors
               }
             }
             return push();
@@ -349,13 +284,17 @@ export async function POST(req: NextRequest) {
             try {
               controller.enqueue(
                 encoder.encode(
-                  sseEncode({ error: errorMsg, code: aborted ? 408 : 500, provider: 'openrouter', usedKeyType }),
+                  sseEncode({
+                    error: errorMsg,
+                    code: aborted ? 408 : 500,
+                    provider: 'openrouter',
+                    usedKeyType,
+                  }),
                 ),
               );
               controller.enqueue(encoder.encode('data: [DONE]\n\n'));
             } finally {
               clearTimeout(timeoutId);
-              if (retryTimeoutId) clearTimeout(retryTimeoutId);
               controller.close();
             }
           }
@@ -367,7 +306,6 @@ export async function POST(req: NextRequest) {
           reader.cancel();
         } catch {}
         clearTimeout(timeoutId);
-        if (retryTimeoutId) clearTimeout(retryTimeoutId);
       },
     });
 

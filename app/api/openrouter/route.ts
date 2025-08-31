@@ -284,11 +284,6 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify(bodyObj),
     });
 
-    // Known alias fallbacks for transient renames/unavailable slugs
-    const MODEL_FALLBACKS: Record<string, string> = {
-      'anthropic/claude-sonnet-4': 'anthropic/claude-3.7-sonnet',
-    };
-
     // Build body first (may include extraction work for PDFs/DOCX)
     const firstBody = await makeBody(messages);
     // Now start timeout so extraction time doesn't count toward it
@@ -339,66 +334,24 @@ export async function POST(req: NextRequest) {
         });
       }
       if (resp.status === 404 && /model not found/i.test(errStr)) {
-        // Attempt a single fallback if known
-        const m = String(model || '');
-        const fb = MODEL_FALLBACKS[m];
-        if (fb) {
-          try {
-            const retryBody = { ...(await makeBody(messages)), model: fb } as unknown;
-            // fresh controller for retry
-            clearTimeout(timeoutId);
-            aborter = new AbortController();
-            const retryTimeoutId = setTimeout(() => aborter.abort(), timeoutMs);
-            try {
-              const retryResp = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-                ...requestInit(retryBody),
-                signal: aborter.signal,
-              });
-              const retryData = await retryResp.json().catch(() => ({}));
-              if (retryResp.ok) {
-                // Normalize below using retry data
-                data = retryData;
-                resp = retryResp;
-              } else {
-                const text = `This model is currently unavailable on OpenRouter (404 model not found). Tried fallback to ${fb} but it also failed.`;
-                clearTimeout(retryTimeoutId);
-                return Response.json(
-                  { text, code: retryResp.status, provider: 'openrouter', usedKeyType },
-                  { status: retryResp.status },
-                );
-              }
-            } finally {
-              clearTimeout(retryTimeoutId);
-            }
-          } catch {
-            const text = `This model is currently unavailable on OpenRouter (404 model not found). A fallback attempt was unsuccessful.`;
-            return Response.json(
-              { text, code: 404, provider: 'openrouter', usedKeyType },
-              { status: 404 },
-            );
-          }
-        } else {
-          const text =
-            'This model is currently unavailable on OpenRouter (404 model not found). It may be renamed, private, or the free pool is paused. Try again later or pick another model.';
-          clearTimeout(timeoutId);
-          return Response.json(
-            { text, code: 404, provider: 'openrouter', usedKeyType },
-            { status: 404 },
-          );
-        }
-      }
-      if (resp.status === 402) {
-        // Payment required / no credit. Provide clearer guidance plus upstream detail.
-        const isGLMPaid =
-          typeof model === 'string' && /z-ai\s*\/\s*glm-4\.5-air(?!:free)/i.test(model);
-        const baseText = isGLMPaid
-          ? 'The model GLM 4.5 Air is a paid model on OpenRouter. Please add your own OpenRouter API key with credit, or select the FREE pool variant "GLM 4.5 Air (FREE)".'
-          : 'Provider returned 402 (payment required / insufficient credit). Add your own OpenRouter API key with credit, or pick a free model variant if available.';
-        const detail = errStr ? ` Details: ${errStr}` : '';
-        const text = `${baseText}${detail}`.trim();
+        const text =
+          'This model is currently unavailable on OpenRouter (404 model not found). It may be renamed, private, or the free pool is paused. Try again later or pick another model.';
         clearTimeout(timeoutId);
         return Response.json(
-          { text, error: errStr, code: 402, provider: 'openrouter', usedKeyType },
+          { text, code: 404, provider: 'openrouter', usedKeyType },
+          { status: 404 },
+        );
+      }
+      if (resp.status === 402) {
+        // Payment required / no credit. Provide clearer guidance.
+        const isGLMPaid =
+          typeof model === 'string' && /z-ai\s*\/\s*glm-4\.5-air(?!:free)/i.test(model);
+        const text = isGLMPaid
+          ? 'The model GLM 4.5 Air is a paid model on OpenRouter. Please add your own OpenRouter API key with credit, or select the FREE pool variant "GLM 4.5 Air (FREE)".'
+          : 'Provider returned 402 (payment required / insufficient credit). Add your own OpenRouter API key with credit, or pick a free model variant if available.';
+        clearTimeout(timeoutId);
+        return Response.json(
+          { text, code: 402, provider: 'openrouter', usedKeyType },
           { status: 402 },
         );
       }
