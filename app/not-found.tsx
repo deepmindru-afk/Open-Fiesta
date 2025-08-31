@@ -1,7 +1,20 @@
+"use client";
+
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { Search } from 'lucide-react';
 
 export default function NotFound() {
+  // Force dark theme for this page only
+  useEffect(() => {
+    const root = document.documentElement;
+    const hadDark = root.classList.contains('dark');
+    if (!hadDark) root.classList.add('dark');
+    return () => {
+      if (!hadDark) root.classList.remove('dark');
+    };
+  }, []);
+
   return (
     <main className="min-h-screen flex items-center justify-center bg-background text-foreground p-6">
       <div className="w-full max-w-lg rounded-lg border border-white/10 bg-black/20 p-8 text-center shadow-xl backdrop-blur-sm">
