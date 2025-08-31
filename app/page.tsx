@@ -405,6 +405,11 @@ export default function OpenFiestaChat() {
 
   return (
     <div className={cn("min-h-screen w-full relative", isDark ? "dark" : "")}> 
+      {/* SEO: Primary page heading for branded queries */}
+      <h1 className="sr-only">
+        Open Fiesta — chat and compare 300+ AI models (OpenAI, Claude, Gemini, DeepSeek, Grok) in one place
+      </h1>
+
       {/* Background */}
       {isDark ? (
         <div
