@@ -583,7 +583,7 @@ export default function OpenFiestaChat() {
                 </button>
 
                 {/* Inline Support button on mobile header */}
-                <div className="sm:hidden">
+                <div>
                   <SupportDropdown theme={theme.mode === 'dark' ? 'dark' : 'light'} inline />
                 </div>
 
@@ -692,11 +692,6 @@ export default function OpenFiestaChat() {
         pauseOnHover
         theme="dark"
       />
-
-      
-      <div className="hidden sm:block">
-        <SupportDropdown theme={theme.mode === 'dark' ? 'dark' : 'light'} />
-      </div>
     </div>
   )
 }

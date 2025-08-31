@@ -106,7 +106,7 @@ export default function ProjectModal({ open, onClose, onSave, project = null }: 
       >
         {/* Header */}
         <div className={cn(
-          "flex items-center justify-between p-4 border-b",
+          "flex items-center justify-between px-4 py-4 lg:py-2 border-b",
           isDark ? "border-white/10" : "border-black/10"
         )}>
           <h2 className={cn(
@@ -152,7 +152,7 @@ export default function ProjectModal({ open, onClose, onSave, project = null }: 
               onChange={(e) => handleNameChange(e.target.value)}
               placeholder="Enter a name for your project (max 50 characters)"
               className={cn(
-                "w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 transition-colors",
+                "w-full px-3 py-2 border text-sm rounded-md focus:outline-none focus:ring-2 transition-colors",
                 isDark
                   ? "bg-white/5 text-white placeholder-white/40"
                   : "bg-black/5 text-gray-800 placeholder-gray-500",
@@ -187,7 +187,7 @@ export default function ProjectModal({ open, onClose, onSave, project = null }: 
               placeholder="Enter a system prompt for chats in this project (max 1000 characters)"
               rows={6}
               className={cn(
-                "w-full px-3 py-2 border rounded-md resize-none focus:outline-none focus:ring-2 transition-colors",
+                "w-full px-3 py-2 text-sm border rounded-md resize-none focus:outline-none focus:ring-2 transition-colors",
                 isDark
                   ? "bg-white/5 text-white placeholder-white/40"
                   : "bg-black/5 text-gray-800 placeholder-gray-500",

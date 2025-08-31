@@ -8,6 +8,7 @@ import Settings from '@/components/app/Settings';
 import { Layers, Home, Menu as MenuIcon } from 'lucide-react';
 import { useTheme } from '@/lib/themeContext';
 import { cn } from '@/lib/utils';
+import SupportDropdown from '../support-dropdown';
 
 type Props = {
   onOpenMenu: () => void;
@@ -118,6 +119,9 @@ export default function HeaderBar({
         <ThemeToggle compact />
         <Settings compact />
         <GithubStar owner={githubOwner} repo={githubRepo} />
+        <div >
+          <SupportDropdown inline theme={theme.mode === 'dark' ? 'dark' : 'light'} />
+        </div>
       </div>
     </div>
   );
