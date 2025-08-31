@@ -507,7 +507,7 @@ export default function ThreadSidebar({
 
       {/* Mobile Sidebar */}
       {mobileSidebarOpen && (
-        <div className="lg:hidden fixed inset-0 z-40">
+        <div className="lg:hidden fixed inset-0 z-[70]">
           <div className="absolute inset-0 bg-black/60" onClick={onCloseMobile} />
           <div className={cn(
             "absolute left-0 top-0 h-full w-80 max-w-[85vw] rounded-r-xl border p-4 backdrop-blur-xl shadow-2xl",

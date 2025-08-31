@@ -8,9 +8,56 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Open Fiesta - AI Chat Assistant",
-  description: "Your intelligent conversation partner",
+  metadataBase: new URL("https://openfiesta.app"),
+  title: {
+    default: "Open Fiesta – AI Chat Assistant",
+    template: "%s | Open Fiesta",
+  },
+  description:
+    "Open Fiesta lets you chat with 300+ AI models—OpenAI, Gemini, Claude, Perplexity, DeepSeek, Grok, and more—in one place. Compare responses and stay in flow.",
+  applicationName: "Open Fiesta",
   generator: "Open Fiesta",
+  keywords: [
+    "Open Fiesta",
+    "openfiesta",
+    "AI chat",
+    "AI assistant",
+    "GPT alternative",
+    "OpenRouter",
+    "Gemini",
+    "Claude",
+    "AI compare",
+    "Niladri Hazra",
+  ],
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    url: "https://openfiesta.app/",
+    siteName: "Open Fiesta",
+    title: "Open Fiesta – AI Chat Assistant",
+    description:
+      "Open Fiesta lets you chat with 200+ AI models—OpenAI, Gemini, Claude, Perplexity, DeepSeek, Grok, and more—in one place. Compare responses and stay in flow.",
+    images: [
+      {
+        url: "/brand.png",
+        width: 1200,
+        height: 630,
+        alt: "Open Fiesta",
+      },
+    ],
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "@byteHumi",
+    creator: "@byteHumi",
+    title: "Open Fiesta – AI Chat Assistant",
+    description:
+      "Open Fiesta lets you chat with 200+ AI models—OpenAI, Gemini, Claude, Perplexity, DeepSeek, Grok, and more—in one place. Compare responses and stay in flow.",
+    images: ["/brand.png"],
+  },
 }
 
 export default function RootLayout({
