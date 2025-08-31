@@ -165,7 +165,7 @@ export const metadata: Metadata = {
     type: "website",
     url: "https://openfiesta.app/",
     siteName: "Open Fiesta",
-    title: "Open Fiesta – AI Chat Assistant",
+    title: "Open Fiesta – Use Open Source LLMs",
     description:
       "Open Fiesta lets you chat with 300+ AI models—OpenAI, Gemini, Claude, Perplexity, DeepSeek, Grok, and more—in one place. Compare responses and stay in flow.",
     images: [
