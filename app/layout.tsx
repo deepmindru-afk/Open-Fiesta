@@ -198,9 +198,11 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <head>
         {/* Explicit OG/Twitter image for maximum compatibility */}
-        <meta property="og:title" content="Open Fiesta – Open Source LLms " />
+        <title>Open Fiesta – Use Open Source LLMs</title>
+        <meta name="description" content="Open Fiesta lets you chat with 300+ AI models—OpenAI, Gemini, Claude, Perplexity, DeepSeek, Grok, and more—in one place. Compare responses and stay in flow." />
+        <meta property="og:title" content="Open Fiesta – Use Open Source LLMs" />
         <meta property="og:description" content="Open Fiesta lets you chat with 300+ AI models—OpenAI, Gemini, Claude, Perplexity, DeepSeek, Grok, and more—in one place. Compare responses and stay in flow." />
-        <meta property="og:url" content="https://openfiesta.app/" />
+        <meta property="og:url" content="https://openfiesta.app" />
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="Open Fiesta" />
         <meta property="og:locale" content="en_US" />
@@ -216,8 +218,10 @@ export default function RootLayout({
         <meta name="thumbnail" content="https://openfiesta.app/og.png" />
         <meta name="twitter:image" content="https://openfiesta.app/og.png" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Open Fiesta – AI Chat Assistant" />
+        <meta name="twitter:title" content="Open Fiesta – Use Open Source LLMs" />
         <meta name="twitter:description" content="Open Fiesta lets you chat with 300+ AI models—OpenAI, Gemini, Claude, Perplexity, DeepSeek, Grok, and more—in one place. Compare responses and stay in flow." />
+        <meta property="twitter:domain" content="openfiesta.app" />
+        <meta property="twitter:url" content="https://openfiesta.app" />
         <meta name="twitter:site" content="@byteHumi" />
         <meta name="twitter:creator" content="@byteHumi" />
         {/* Optional: helps Discord/Slack fetch quickly */}
