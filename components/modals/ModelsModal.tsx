@@ -181,6 +181,8 @@ export default function ModelsModal({
       prev.includes(modelId) ? prev.filter((id) => id !== modelId) : [...prev, modelId],
     );
   };
+  // Display name overrides for providers
+  const providerLabel = (p: string) => (p === 'unstable' ? 'Quran.lat' : p.replace('-', ' '));
   const pick = (m: AiModel) => {
     if (isFav(m)) return 'Favorites';
     if (isThinkingModel(m)) return 'Thinking Models';
@@ -198,7 +200,8 @@ export default function ModelsModal({
     return (
       m.label.toLowerCase().includes(query) ||
       m.model.toLowerCase().includes(query) ||
-      m.provider.toLowerCase().includes(query)
+      m.provider.toLowerCase().includes(query) ||
+      providerLabel(m.provider).toLowerCase().includes(query)
     );
   });
 
@@ -491,7 +494,7 @@ export default function ModelsModal({
                   "text-[12px] mb-3 capitalize font-medium",
                   isDark ? "text-zinc-400" : "text-gray-600"
                 )}>
-                  {m.provider.replace('-', ' ')}
+                  {providerLabel(m.provider)}
                 </p>
                 
                 {/* Enhanced selection indicator */}
