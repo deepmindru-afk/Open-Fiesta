@@ -9,45 +9,45 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://openfiesta.app"),
+  metadataBase: new URL("https://www.portalos.ru""),
   title: {
-    default: "Open Fiesta – AI Chat Assistant",
-    template: "%s | Open Fiesta",
+    default: "Portal – AI Chat Assistant",
+    template: "%s | Portal",
   },
   description:
-    "Open Fiesta lets you chat with 300+ AI models—OpenAI, Gemini, Claude, Perplexity, DeepSeek, Grok, and more—in one place. Compare responses and stay in flow.",
-  applicationName: "Open Fiesta",
-  generator: "Open Fiesta",
+    "Portal lets you chat with 300+ AI models—OpenAI, Gemini, Claude, Perplexity, DeepSeek, Grok, and more—in one place. Compare responses and stay in flow.",
+  applicationName: "Portal",
+  generator: "Portal",
   keywords: [
-    // Brand focus: Open Fiesta variations
-    "Open Fiesta",
+    // Brand focus: Portal variations
+    "Portal",
     "OpenFiesta",
     "openfiesta",
     "open-fiesta",
     "Open-Fiesta",
-    "open fiesta",
+    "Portal",
     "openfiesta.app",
     "www.openfiesta.app",
     "open-fiesta.app",
-    "open fiesta website",
+    "Portal website",
     "openfiesta website",
-    "Open Fiesta app",
+    "Portal app",
     "OpenFiesta app",
     "openfiesta app",
     "open-fiesta app",
-    "Open Fiesta AI",
+    "Portal AI",
     "OpenFiesta AI",
     "openfiesta ai",
     "openfiesta ai chat",
     "open-fiesta ai chat",
-    "open fiesta chat",
+    "Portal chat",
     "open-fiesta chat",
     // Common misspellings people type
     "openfista",
     "open-feista",
     "openfiestaa",
     "open fiest",
-    "open fiestaa",
+    "Portala",
     "openbfiesta",
     // Brand focus: AI Fiesta variations
     "AI Fiesta",
@@ -60,15 +60,15 @@ export const metadata: Metadata = {
     "aifiesta",
     "ai fiesta app",
     // App intent combinations
-    "Open Fiesta chat app",
-    "Open Fiesta AI app",
+    "Portal chat app",
+    "Portal AI app",
     "openfiesta chat",
     "openfiesta ai app",
     "AI fiesta chat",
     "openfiesta compare",
-    "open fiesta compare",
+    "Portal compare",
     "openfiesta openrouter",
-    "open fiesta openrouter",
+    "Portal openrouter",
     "openfiesta open router",
     // Primary intents
     "AI chat",
@@ -124,11 +124,11 @@ export const metadata: Metadata = {
     "evaluate AI answer quality",
     "AI productivity tool",
     // Brand
-    "Niladri Hazra",
+    "Portal",
   ].join(", "),
-  authors: [{ name: "Niladri Hazra", url: "https://github.com/NiladriHazra" }],
-  creator: "Niladri Hazra",
-  publisher: "Open Fiesta",
+  authors: [{ name: "Portal", url: "https://www.portalos.ru" }],
+  creator: "Portal",
+  publisher: "Portal",
   robots: {
     index: true,
     follow: true,
@@ -153,7 +153,7 @@ export const metadata: Metadata = {
     "Open Source",
   ].join(", "),
   other: {
-    "application-name": "Open Fiesta",
+    "application-name": "Portal",
     "apple-mobile-web-app-capable": "yes",
     "mobile-web-app-capable": "yes",
     "theme-color": "#000000",
@@ -163,28 +163,28 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    url: "https://openfiesta.app/",
-    siteName: "Open Fiesta",
-    title: "Open Fiesta – Use Open Source LLMs",
+    url: "https://www,portalos.ru/",
+    siteName: "Portal",
+    title: "Portal – Use Open Source LLMs",
     description:
-      "Open Fiesta lets you chat with 300+ AI models—OpenAI, Gemini, Claude, Perplexity, DeepSeek, Grok, and more—in one place. Compare responses and stay in flow.",
+      "Portal lets you chat with 300+ AI models—OpenAI, Gemini, Claude, Perplexity, DeepSeek, Grok, and more—in one place. Compare responses and stay in flow.",
     images: [
       {
         url: "https://openfiesta.app/og.png",
         width: 1200,
         height: 630,
-        alt: "Open Fiesta",
+        alt: "Portal",
       },
     ],
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    site: "@byteHumi",
-    creator: "@byteHumi",
-    title: "Open Fiesta – AI Chat Assistant",
+    site: "@portal",
+    creator: "@portal",
+    title: "Portal – AI Chat Assistant",
     description:
-      "Open Fiesta lets you chat with 300+ AI models—OpenAI, Gemini, Claude, Perplexity, DeepSeek, Grok, and more—in one place. Compare responses and stay in flow.",
+      "Portal lets you chat with 300+ AI models—OpenAI, Gemini, Claude, Perplexity, DeepSeek, Grok, and more—in one place. Compare responses and stay in flow.",
     images: ["https://openfiesta.app/og.png"],
   },
 }
@@ -198,30 +198,30 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <head>
         {/* Explicit OG/Twitter image for maximum compatibility */}
-        <title>Open Fiesta – Use Open Source LLMs</title>
-        <meta name="description" content="Open Fiesta lets you chat with 300+ AI models—OpenAI, Gemini, Claude, Perplexity, DeepSeek, Grok, and more—in one place. Compare responses and stay in flow." />
-        <meta property="og:title" content="Open Fiesta – Use Open Source LLMs" />
-        <meta property="og:description" content="Open Fiesta lets you chat with 300+ AI models—OpenAI, Gemini, Claude, Perplexity, DeepSeek, Grok, and more—in one place. Compare responses and stay in flow." />
-        <meta property="og:url" content="https://openfiesta.app" />
+        <title>Portal – Use Open Source LLMs</title>
+        <meta name="description" content="Portal lets you chat with 300+ AI models—OpenAI, Gemini, Claude, Perplexity, DeepSeek, Grok, and more—in one place. Compare responses and stay in flow." />
+        <meta property="og:title" content="Portal – Use Open Source LLMs" />
+        <meta property="og:description" content="Portal lets you chat with 300+ AI models—OpenAI, Gemini, Claude, Perplexity, DeepSeek, Grok, and more—in one place. Compare responses and stay in flow." />
+        <meta property="og:url" content="https://www.portalos.ru" />
         <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="Open Fiesta" />
+        <meta property="og:site_name" content="Portal" />
         <meta property="og:locale" content="en_US" />
         <meta property="og:image" content="https://openfiesta.app/og.png" />
         <meta property="og:image:secure_url" content="https://openfiesta.app/og.png" />
         <meta property="og:image:type" content="image/png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
-        <meta property="og:image:alt" content="Open Fiesta" />
+        <meta property="og:image:alt" content="Portal" />
         {/* Generic image hints for Google/LinkedIn/others */}
         <meta itemProp="image" content="https://openfiesta.app/og.png" />
         <link rel="image_src" href="https://openfiesta.app/og.png" />
         <meta name="thumbnail" content="https://openfiesta.app/og.png" />
         <meta name="twitter:image" content="https://openfiesta.app/og.png" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Open Fiesta – Use Open Source LLMs" />
-        <meta name="twitter:description" content="Open Fiesta lets you chat with 300+ AI models—OpenAI, Gemini, Claude, Perplexity, DeepSeek, Grok, and more—in one place. Compare responses and stay in flow." />
+        <meta name="twitter:title" content="Portal – Use Open Source LLMs" />
+        <meta name="twitter:description" content="Portal lets you chat with 300+ AI models—OpenAI, Gemini, Claude, Perplexity, DeepSeek, Grok, and more—in one place. Compare responses and stay in flow." />
         <meta property="twitter:domain" content="openfiesta.app" />
-        <meta property="twitter:url" content="https://openfiesta.app" />
+        <meta property="twitter:url" content="https://www.portalos.ru"" />
         <meta name="twitter:site" content="@byteHumi" />
         <meta name="twitter:creator" content="@byteHumi" />
         {/* Optional: helps Discord/Slack fetch quickly */}
@@ -236,12 +236,12 @@ export default function RootLayout({
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Organization",
-            name: "Open Fiesta",
-            url: "https://openfiesta.app",
+            name: "Portal",
+            url: "https://www.portalos.ru"",
             logo: "https://openfiesta.app/brand.png",
             sameAs: [
               "https://x.com/byteHumi",
-              "https://github.com/NiladriHazra/Open-Fiesta"
+              "https://www.portalos.ru/Open-Fiesta"
             ]
           })}
         </Script>
@@ -249,11 +249,11 @@ export default function RootLayout({
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebSite",
-            name: "Open Fiesta",
-            url: "https://openfiesta.app",
+            name: "Portal",
+            url: "https://www.portalos.ru"",
             potentialAction: {
               "@type": "SearchAction",
-              target: "https://openfiesta.app/?q={search_term_string}",
+              target: "https://ichat.portalos.ru/?q={search_term_string}",
               "query-input": "required name=search_term_string"
             }
           })}
@@ -262,10 +262,10 @@ export default function RootLayout({
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebApplication",
-            name: "Open Fiesta",
+            name: "Portal",
             description:
               "Chat with and compare 300+ AI models (OpenAI, Claude, Gemini, Perplexity, DeepSeek, Grok) side-by-side in one place.",
-            url: "https://openfiesta.app",
+            url: "https://www.portalos.ru"",
             applicationCategory: "DeveloperApplication",
             operatingSystem: "Web",
             offers: {
@@ -276,13 +276,13 @@ export default function RootLayout({
             },
             publisher: {
               "@type": "Organization",
-              name: "Open Fiesta",
-              url: "https://openfiesta.app"
+              name: "Portal",
+              url: "https://www.portalos.ru""
             },
             author: {
               "@type": "Person",
-              name: "Niladri Hazra",
-              url: "https://github.com/NiladriHazra"
+              name: "Portal",
+              url: "https://www.portalos.ru"
             },
             inLanguage: "en-US",
             isAccessibleForFree: true,
