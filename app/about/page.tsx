@@ -10,24 +10,24 @@ const ibmMono = IBM_Plex_Mono({
 })
 
 export const metadata: Metadata = {
-  title: "About — Open Fiesta",
+  title: "About — Portal",
   description:
-    "Learn about Open Fiesta, the AI chat that lets you compare 300+ models in one place. Built by Niladri Hazra.",
+    "Learn about Portal, the AI chat that lets you compare 300+ models in one place. Built by Portal.",
   alternates: { canonical: "/about" },
   openGraph: {
-    title: "About — Open Fiesta",
+    title: "About — Portal",
     description:
-      "Learn about Open Fiesta, the AI chat that lets you compare 300+ models in one place.",
+      "Learn about Portal, the AI chat that lets you compare 300+ models in one place.",
     url: "https://openfiesta.app/about",
-    siteName: "Open Fiesta",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Open Fiesta" }],
+    siteName: "Portal",
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "Portal" }],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "About — Open Fiesta",
+    title: "About — Portal",
     description:
-      "Learn about Open Fiesta, the AI chat that lets you compare 300+ models in one place.",
+      "Learn about Portal, the AI chat that lets you compare 300+ models in one place.",
     images: ["/og.png"],
   },
 }
@@ -69,7 +69,7 @@ export default function AboutPage() {
 
         {/* Title */}
         <h1 className="text-zinc-100 text-3xl sm:text-4xl md:text-5xl leading-tight mb-4">
-          Open Fiesta
+          Portal
         </h1>
         <p className="text-zinc-300/90 text-sm sm:text-base leading-relaxed max-w-3xl">
           Chat with and compare <span className="font-semibold text-zinc-100">300+ AI models</span> — OpenAI, Claude,
@@ -81,9 +81,9 @@ export default function AboutPage() {
         <div className="my-10 h-px w-full bg-gradient-to-r from-transparent via-zinc-700/40 to-transparent" />
 
         {/* Founder */}
-        <h2 className="text-[11px] tracking-[0.22em] uppercase text-zinc-400 mb-3">Built by Niladri Hazra</h2>
+        <h2 className="text-[11px] tracking-[0.22em] uppercase text-zinc-400 mb-3">Built by Portal</h2>
         <p className="text-zinc-300/90 text-sm sm:text-base leading-relaxed max-w-3xl mb-4">
-          Hi, I’m Niladri. I’m building Open Fiesta to make multi‑model workflows simple and fast.
+          Hi, I’m Niladri. I’m building Portal to make multi‑model workflows simple and fast.
           Follow along on X and GitHub, and feel free to reach out.
         </p>
 
@@ -92,7 +92,7 @@ export default function AboutPage() {
           <li>
             <a
               className="inline-flex w-full items-center justify-between rounded border border-zinc-800 bg-zinc-900/40 px-3 py-2 text-xs text-zinc-200 hover:bg-zinc-900 hover:border-zinc-700 transition"
-              href="https://x.com/byteHumi" target="_blank" rel="noreferrer"
+              href="https://x.com/portalos" target="_blank" rel="noreferrer"
             >
               X / @byteHumi <span className="text-zinc-500">↗</span>
             </a>
@@ -100,7 +100,7 @@ export default function AboutPage() {
           <li>
             <a
               className="inline-flex w-full items-center justify-between rounded border border-zinc-800 bg-zinc-900/40 px-3 py-2 text-xs text-zinc-200 hover:bg-zinc-900 hover:border-zinc-700 transition"
-              href="https://github.com/NiladriHazra/Open-Fiesta" target="_blank" rel="noreferrer"
+              href="https://www.portalos.ru/" target="_blank" rel="noreferrer"
             >
               GitHub <span className="text-zinc-500">↗</span>
             </a>
@@ -108,7 +108,7 @@ export default function AboutPage() {
           <li>
             <a
               className="inline-flex w-full items-center justify-between rounded border border-zinc-800 bg-zinc-900/40 px-3 py-2 text-xs text-zinc-200 hover:bg-zinc-900 hover:border-zinc-700 transition"
-              href="mailto:niladrivit@gmail.com"
+              href="mailto:adssad@gmail.com"
             >
               Email
             </a>
@@ -117,7 +117,7 @@ export default function AboutPage() {
 
         {/* Features */}
         <div className="mt-12">
-          <h2 className="text-[11px] tracking-[0.22em] uppercase text-zinc-400 mb-3">What makes Open Fiesta different</h2>
+          <h2 className="text-[11px] tracking-[0.22em] uppercase text-zinc-400 mb-3">What makes Portal different</h2>
           <ul className="space-y-2 text-zinc-300/90 text-sm sm:text-base">
             <li className="flex gap-3"><span className="text-zinc-500">→</span> Compare answers from multiple models in a single view</li>
             <li className="flex gap-3"><span className="text-zinc-500">→</span> Organize by projects; keep context flowing</li>
@@ -130,11 +130,11 @@ export default function AboutPage() {
           <h2 className="text-[11px] tracking-[0.22em] uppercase text-zinc-400 mb-3">FAQ</h2>
           <div className="space-y-6 text-zinc-300/90 text-sm sm:text-base">
             <div>
-              <p className="text-zinc-200 mb-1">What is Open Fiesta?</p>
-              <p>Open Fiesta is an AI chat app that lets you compare responses from <strong>300+ models</strong> in one UI.</p>
+              <p className="text-zinc-200 mb-1">What is Portal?</p>
+              <p>Portal is an AI chat app that lets you compare responses from <strong>300+ models</strong> in one UI.</p>
             </div>
             <div>
-              <p className="text-zinc-200 mb-1">Is Open Fiesta free?</p>
+              <p className="text-zinc-200 mb-1">Is Portal free?</p>
               <p>There’s a free experience with limitations. You can connect your own API keys for full power and control.</p>
             </div>
             <div>
@@ -146,8 +146,8 @@ export default function AboutPage() {
               <p>It’s built for side‑by‑side comparison, fast iteration, and project organization—so you can pick the best answer quickly.</p>
             </div>
             <div>
-              <p className="text-zinc-200 mb-1">Who built Open Fiesta?</p>
-              <p>Open Fiesta is built by Niladri Hazra. See the contact links above or our <a className="underline decoration-zinc-600 hover:decoration-zinc-400" href="/press">Press</a> page.</p>
+              <p className="text-zinc-200 mb-1">Who built Portal?</p>
+              <p>Portal is built by Portal. See the contact links above or our <a className="underline decoration-zinc-600 hover:decoration-zinc-400" href="/press">Press</a> page.</p>
             </div>
           </div>
         </div>
@@ -160,12 +160,12 @@ export default function AboutPage() {
             mainEntity: [
               {
                 "@type": "Question",
-                name: "What is Open Fiesta?",
-                acceptedAnswer: { "@type": "Answer", text: "Open Fiesta is an AI chat app that lets you compare responses from 300+ models in one UI." }
+                name: "What is Portal?",
+                acceptedAnswer: { "@type": "Answer", text: "Portal is an AI chat app that lets you compare responses from 300+ models in one UI." }
               },
               {
                 "@type": "Question",
-                name: "Is Open Fiesta free?",
+                name: "Is Portal free?",
                 acceptedAnswer: { "@type": "Answer", text: "There’s a free experience with limitations. You can connect your own API keys for full power and control." }
               },
               {
@@ -180,8 +180,8 @@ export default function AboutPage() {
               },
               {
                 "@type": "Question",
-                name: "Who built Open Fiesta?",
-                acceptedAnswer: { "@type": "Answer", text: "Open Fiesta is built by Niladri Hazra. See the contact links on the About page or the Press page for more." }
+                name: "Who built Portal?",
+                acceptedAnswer: { "@type": "Answer", text: "Portal is built by Portal. See the contact links on the About page or the Press page for more." }
               }
             ]
           })}
@@ -191,7 +191,7 @@ export default function AboutPage() {
         <div className="mt-12">
           <h2 className="text-[11px] tracking-[0.22em] uppercase text-zinc-400 mb-3">Press & media</h2>
           <p className="text-zinc-300/90 text-sm sm:text-base">
-            Looking to cover Open Fiesta? See our <a className="underline decoration-zinc-600 hover:decoration-zinc-400" href="/press">Press</a> page for brand assets and a short boilerplate.
+            Looking to cover Portal? See our <a className="underline decoration-zinc-600 hover:decoration-zinc-400" href="/press">Press</a> page for brand assets and a short boilerplate.
           </p>
         </div>
       </section>
