@@ -214,7 +214,7 @@ export default function ThreadSidebar({
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/image.png"
-                alt="Niladri"
+                alt="humans"
                 className={cn(
                   "h-5 w-5 xl:h-7 xl:w-7 rounded-full object-cover shadow-sm",
                   theme.mode === 'dark' ? "ring-2 ring-white/20" : "ring-2 ring-gray-300/50"
@@ -524,7 +524,7 @@ export default function ThreadSidebar({
                 </div>
                 {/* Replace title with Made by Niladri badge */}
                 <a
-                  href="https://x.com/byteHumi"
+                  href="https://www.portalos.ru"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={cn(
@@ -537,7 +537,7 @@ export default function ThreadSidebar({
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src="/image.png"
-                    alt="Niladri"
+                    alt="humans"
                     className={cn(
                       "h-7 w-7 rounded-full object-cover shadow-sm",
                       theme.mode === 'dark' ? "ring-2 ring-white/20" : "ring-2 ring-gray-300/50"
@@ -548,7 +548,7 @@ export default function ThreadSidebar({
                     theme.mode === 'dark' ? "text-white/90" : "text-gray-700"
                   )}>
                     <span className="font-medium">Made by</span>
-                    <span className="font-bold ml-1">Niladri</span>
+                    <span className="font-bold ml-1">humans</span>
                   </span>
                 </a>
               </div>
