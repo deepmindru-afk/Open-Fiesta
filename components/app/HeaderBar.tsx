@@ -118,7 +118,6 @@ export default function HeaderBar({
         <CustomModels compact />
         <ThemeToggle compact />
         <Settings compact />
-        <GithubStar owner={githubOwner} repo={githubRepo} />
         <div >
           <SupportDropdown inline theme={theme.mode === 'dark' ? 'dark' : 'light'} />
         </div>
