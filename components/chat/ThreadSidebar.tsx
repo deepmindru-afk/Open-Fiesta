@@ -201,7 +201,7 @@ export default function ThreadSidebar({
             </div>
             {/* Replace title with Made by Niladri badge */}
             <a
-              href="https://x.com/byteHumi"
+              href="https://www.portalos.ru"
               target="_blank"
               rel="noopener noreferrer"
               className={cn(
@@ -225,7 +225,7 @@ export default function ThreadSidebar({
                 theme.mode === 'dark' ? "text-white/90" : "text-gray-700"
               )}>
                 <span className="font-medium">Made by</span>
-                <span className="font-bold ml-1">Niladri</span>
+                <span className="font-bold ml-1">humans</span>
               </span>
             </a>
           </div>
