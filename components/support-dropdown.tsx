@@ -149,7 +149,7 @@ const SupportDropdown: React.FC<SupportDropdownProps> = ({
               <Coffee className="w-3 sm:w-4 h-3 sm:h-4 text-white" />
             </div>
             <span className="font-medium text-sm sm:text-base">
-              Buy Me Coffee
+              Buy Me Ferrari
             </span>
           </button>
 
@@ -171,14 +171,14 @@ const SupportDropdown: React.FC<SupportDropdownProps> = ({
               </div>
               <div className="flex-1 text-left">
                 <div className="font-medium text-sm sm:text-base">
-                  UPI Payment
+                  Payment
                 </div>
                 <div
                   className={`text-xs ${
                     theme === "dark" ? "text-white/60" : "text-gray-600"
                   }`}
                 >
-                  Scan QR or copy UPI ID
+                  Scan QR or copy ID
                 </div>
               </div>
               <button
@@ -212,7 +212,7 @@ const SupportDropdown: React.FC<SupportDropdownProps> = ({
                 </span>
               </div>
               <div className="text-[11px] text-gray-500">
-                Scan to pay with any UPI app
+                Scan to pay
               </div>
             </div>
             {copied && (
