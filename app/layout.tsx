@@ -9,7 +9,7 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.portalos.ru""),
+  metadataBase: new URL("https://www.portalos.ru"),
   title: {
     default: "Portal – AI Chat Assistant",
     template: "%s | Portal",
@@ -221,7 +221,7 @@ export default function RootLayout({
         <meta name="twitter:title" content="Portal – Use Open Source LLMs" />
         <meta name="twitter:description" content="Portal lets you chat with 300+ AI models—OpenAI, Gemini, Claude, Perplexity, DeepSeek, Grok, and more—in one place. Compare responses and stay in flow." />
         <meta property="twitter:domain" content="openfiesta.app" />
-        <meta property="twitter:url" content="https://www.portalos.ru"" />
+        <meta property="twitter:url" content="https://www.portalos.ru" />
         <meta name="twitter:site" content="@byteHumi" />
         <meta name="twitter:creator" content="@byteHumi" />
         {/* Optional: helps Discord/Slack fetch quickly */}
@@ -237,7 +237,7 @@ export default function RootLayout({
             "@context": "https://schema.org",
             "@type": "Organization",
             name: "Portal",
-            url: "https://www.portalos.ru"",
+            url: "https://www.portalos.ru",
             logo: "https://openfiesta.app/brand.png",
             sameAs: [
               "https://x.com/byteHumi",
@@ -250,7 +250,7 @@ export default function RootLayout({
             "@context": "https://schema.org",
             "@type": "WebSite",
             name: "Portal",
-            url: "https://www.portalos.ru"",
+            url: "https://www.portalos.ru",
             potentialAction: {
               "@type": "SearchAction",
               target: "https://ichat.portalos.ru/?q={search_term_string}",
@@ -265,7 +265,7 @@ export default function RootLayout({
             name: "Portal",
             description:
               "Chat with and compare 300+ AI models (OpenAI, Claude, Gemini, Perplexity, DeepSeek, Grok) side-by-side in one place.",
-            url: "https://www.portalos.ru"",
+            url: "https://www.portalos.ru",
             applicationCategory: "DeveloperApplication",
             operatingSystem: "Web",
             offers: {
@@ -277,7 +277,7 @@ export default function RootLayout({
             publisher: {
               "@type": "Organization",
               name: "Portal",
-              url: "https://www.portalos.ru""
+              url: "https://www.portalos.ru"
             },
             author: {
               "@type": "Person",
