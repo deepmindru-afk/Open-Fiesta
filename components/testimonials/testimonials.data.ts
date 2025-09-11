@@ -1,4 +1,4 @@
-// Define the structure so it"s easy to add more testimonials
+// Define the structure so itis easy to add more testimonials
 export type TweetReview = {
   name: string;
   username: string; // includes @
@@ -7,7 +7,7 @@ export type TweetReview = {
   href: string; // tweet URL
 };
 
-// Define the type which doesn"t include the username
+// Define the type which doesn't include the username
 type TweetReviewWithoutUsername = Omit<TweetReview, "username">;
 
 // Add as many different users/tweets as you like here
@@ -292,10 +292,9 @@ Lfggg ; ) 🔥🔥`,
 ];
 
 export const reviews: TweetReview[] = reviewsWithoutUsername.map((review) => {
-  // const hrefPart = new URL(review.href).pathname.split("/");
+  const hrefPart = new URL(review.href).pathname.split("/");
 
-  // const username = hrefPart[1] ? `@${hrefPart[1]}` : "";
-  const username = "anon"; // temporarily disable usernames
+  const username = hrefPart[1] ? `@${hrefPart[1]}` : "anon";
 
   return {
     ...review,
