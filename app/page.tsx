@@ -103,7 +103,7 @@ export default function StartupSprintLanding() {
           <Link href="/press" className="text-gray-300/60 hover:text-white font-light transition-colors text-lg">Press</Link>
           <Link href="/about" className="text-gray-300/60 hover:text-white font-light transition-colors text-lg">About</Link>
           <Link href="/chat" className="text-gray-300/60 hover:text-white font-light transition-colors text-lg">Chat</Link>
-          <Link href="/compare" className="text-gray-300/60 hover:text-white font-light transition-colors text-lg">Compare</Link>
+          <Link href="/contributors" className="text-gray-300/60 hover:text-white font-light transition-colors text-lg">Contributors</Link>
         </div>
 
         <div className="hidden md:flex items-center gap-3">
