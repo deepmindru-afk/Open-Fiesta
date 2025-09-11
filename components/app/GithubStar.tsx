@@ -1,19 +1,22 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { Github, Star } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 type Props = {
   owner: string;
   repo: string;
   className?: string;
+  theme?: 'light' | 'dark';
 };
 
-export default function GithubStar({ owner, repo, className }: Props) {
+export default function GithubStar({ owner, repo, className, theme }: Props) {
   const [targetCount, setTargetCount] = useState<number | null>(null);
   const [displayCount, setDisplayCount] = useState<number>(0);
   const animRef = useRef<number | null>(null);
   const didAnimateRef = useRef(false);
 
+  // Fetch stars from API every 5 min
   useEffect(() => {
     let cancelled = false;
     const load = async () => {
@@ -40,10 +43,10 @@ export default function GithubStar({ owner, repo, className }: Props) {
     };
   }, [owner, repo]);
 
+  // Animate star count
   useEffect(() => {
     if (targetCount == null) return;
 
-    // Animate only once per page load (first fetch)
     if (didAnimateRef.current) {
       setDisplayCount(targetCount);
       return;
@@ -51,7 +54,7 @@ export default function GithubStar({ owner, repo, className }: Props) {
 
     didAnimateRef.current = true;
     setDisplayCount(0);
-    const duration = 900; // ms
+    const duration = 2000; // ms
     const start = performance.now();
 
     const tick = (now: number) => {
@@ -72,35 +75,55 @@ export default function GithubStar({ owner, repo, className }: Props) {
     };
   }, [targetCount]);
 
-  const countText = targetCount == null ? '—' : displayCount.toLocaleString();
+  const countText = targetCount == null ? '0' : displayCount.toLocaleString();
+
+  // Set theme classes based on theme prop
+  const isLight = theme === 'light';
+  const isDark = theme === 'dark';
 
   return (
     <a
       href={`https://github.com/${owner}/${repo}`}
       target="_blank"
       rel="noopener noreferrer"
-      className={[
-        "group inline-flex items-center gap-2 px-2.5 py-1 rounded-full transition-all duration-200",
-        "bg-white/70 border border-white/40 text-gray-700 hover:bg-white/80 hover:border-white/50",
-        "dark:bg-white/5 dark:border-white/15 dark:text-white dark:hover:bg-white/10",
-        "text-xs md:text-sm backdrop-blur-sm",
-        className || "",
-      ].join(" ")}
+      className={cn(
+        'group inline-flex p-2 items-center gap-2 rounded-lg  border transition-colors text-sm px-2',
+        isLight && 'bg-white text-black hover:bg-gray-100 border-gray-200',
+        isDark && 'bg-black text-white hover:bg-black/90 border-neutral-900',
+        !theme && 'bg-white text-black hover:bg-gray-100 border-gray-200 dark:bg-black dark:text-white hover:dark:bg-black/90 dark:border-neutral-900',
+        className
+      )}
       title="Star on GitHub"
+      aria-label="Star this project on GitHub"
     >
-      {/* Left: circular chip with GitHub icon */}
-      <span className="h-6 w-6 md:h-6 md:w-6 rounded-full border border-gray-400/60 dark:border-white/15 bg-white/20 group-hover:bg-white/30 dark:bg-white/5 dark:group-hover:bg-white/10 inline-flex items-center justify-center">
-        <Github size={14} className="text-gray-700 dark:text-white/90" />
-      </span>
-      {/* Middle: star icon always, label hidden on mobile */}
-      <span className="inline-flex items-center gap-1 text-gray-700 dark:text-white/90">
-        <Star size={14} className="text-yellow-500 dark:text-yellow-300" />
-        <span className="hidden sm:inline">Star</span>
-      </span>
-      {/* Right: count chip */}
-      <span className="h-6 md:h-6 rounded-full border border-gray-400/60 dark:border-white/15 bg-white/20 group-hover:bg-white/30 dark:bg-white/5 dark:group-hover:bg-white/10 inline-flex items-center justify-center px-2 tabular-nums text-gray-700 dark:text-white/90 min-w-[2.25rem] text-center font-medium">
-        {countText}
-      </span>
+      {/* GitHub icon + text */}
+      <div className="flex items-center">
+        <Github
+          className={cn(
+            "mr-1 size-4 fill-current",
+            isLight && "text-black",
+            isDark && "text-white",
+            !theme && "text-black dark:text-white"
+          )}
+          aria-hidden="true"
+        />
+        <span className="ml-1 lg:hidden">Star</span>
+        <span className="ml-1 hidden lg:inline">GitHub</span>
+      </div>
+
+      {/* Star icon + animated count */}
+      <div className="flex items-center gap-1 text-sm">
+        <Star
+          className={cn(
+            "relative top-px size-4 fill-current transition-colors duration-300 group-hover:fill-yellow-400 group-hover:drop-shadow-[0_0_8px_rgba(250,204,21,0.6)]",
+            isLight && "text-black",
+            isDark && "text-white",
+            !theme && "text-black dark:text-white"
+          )}
+          aria-hidden="true"
+        />
+        <span className="font-medium tabular-nums min-w-[2rem] text-right">{countText}</span>
+      </div>
     </a>
   );
 }

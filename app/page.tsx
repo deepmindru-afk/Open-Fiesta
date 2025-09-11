@@ -107,7 +107,7 @@ export default function StartupSprintLanding() {
         </div>
 
         <div className="hidden md:flex items-center gap-3">
-          <GithubStar owner="NiladriHazra" repo="Open-Fiesta" />
+          <GithubStar owner="NiladriHazra" repo="Open-Fiesta" theme="dark" />
           <SupportDropdown inline theme={'dark'} />
         </div>
 
