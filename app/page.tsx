@@ -271,7 +271,10 @@ export default function StartupSprintLanding() {
     
     {/* Large OPEN FIESTA text before footer */}
     <div className="bg-black py-8 md:py-16 flex items-center justify-center overflow-hidden">
-      <h1 className="text-[4.5rem] sm:text-[6.5rem] md:text-[9.5rem] lg:text-[13rem] xl:text-[17rem] 2xl:text-[21rem] text-white uppercase tracking-[0.1em] leading-none select-none animate-pulse text-center whitespace-nowrap" style={{ fontFamily: 'Impact, "Arial Black", "Franklin Gothic Bold", Charcoal, "Helvetica Inserat", "Bitstream Vera Sans Bold", "Arial Bold", sans-serif', fontWeight: 900, fontStretch: 'condensed' }}>
+      <h1
+        className="text-[clamp(2.25rem,18vw,20rem)] text-white uppercase tracking-[0.06em] leading-none select-none animate-pulse text-center whitespace-nowrap max-w-full"
+        style={{ fontFamily: 'Impact, "Arial Black", "Franklin Gothic Bold", Charcoal, "Helvetica Inserat", "Bitstream Vera Sans Bold", "Arial Bold", sans-serif', fontWeight: 900, fontStretch: 'condensed' }}
+      >
         OPEN FIESTA
       </h1>
     </div>
