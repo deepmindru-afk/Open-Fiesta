@@ -3,6 +3,7 @@
  */
 
 import { getServiceWorkerConfig, isPWAEnabled } from './pwa-config';
+import { getCacheManager, CacheStatus, CacheManager } from './cache-strategies';
 
 export interface ServiceWorkerManager {
   register(): Promise<ServiceWorkerRegistration | null>;
@@ -12,15 +13,21 @@ export interface ServiceWorkerManager {
   getCacheNames(): Promise<string[]>;
   clearCache(cacheName?: string): Promise<void>;
   getRegistration(): Promise<ServiceWorkerRegistration | null>;
+  getCacheStatus(): Promise<CacheStatus[]>;
+  cleanupCaches(): Promise<void>;
+  warmCache(urls: string[]): Promise<void>;
+  getCacheManager(): CacheManager;
 }
 
 class ServiceWorkerManagerImpl implements ServiceWorkerManager {
   private registration: ServiceWorkerRegistration | null = null;
   private updateCheckInterval: number;
+  private cacheManager: CacheManager;
 
   constructor() {
     const config = getServiceWorkerConfig();
     this.updateCheckInterval = config.updateCheckInterval;
+    this.cacheManager = getCacheManager();
   }
 
   /**
@@ -134,6 +141,34 @@ class ServiceWorkerManagerImpl implements ServiceWorkerManager {
     }
 
     return null;
+  }
+
+  /**
+   * Get cache status for all caches
+   */
+  async getCacheStatus(): Promise<CacheStatus[]> {
+    return this.cacheManager.getStatus();
+  }
+
+  /**
+   * Cleanup caches (remove expired entries and enforce quota)
+   */
+  async cleanupCaches(): Promise<void> {
+    return this.cacheManager.cleanup();
+  }
+
+  /**
+   * Warm cache with specified URLs
+   */
+  async warmCache(urls: string[]): Promise<void> {
+    return this.cacheManager.warmCache(urls);
+  }
+
+  /**
+   * Get the cache manager instance
+   */
+  getCacheManager(): CacheManager {
+    return this.cacheManager;
   }
 
   /**

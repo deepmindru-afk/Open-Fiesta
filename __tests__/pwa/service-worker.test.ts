@@ -9,6 +9,7 @@ import {
   isServiceWorkerActive,
   getServiceWorkerStatus,
 } from '../../lib/service-worker';
+import { getCacheManager } from '../../lib/cache-strategies';
 
 // Mock the PWA config
 jest.mock('../../lib/pwa-config', () => ({
@@ -64,6 +65,12 @@ describe('Service Worker Manager', () => {
     (global as any).caches = {
       keys: jest.fn().mockResolvedValue(['cache1', 'cache2']),
       delete: jest.fn().mockResolvedValue(true),
+      open: jest.fn().mockResolvedValue({
+        keys: jest.fn().mockResolvedValue([]),
+        match: jest.fn().mockResolvedValue(null),
+        put: jest.fn().mockResolvedValue(undefined),
+        delete: jest.fn().mockResolvedValue(true),
+      }),
     };
 
     // Mock window events
@@ -165,6 +172,44 @@ describe('Service Worker Manager', () => {
       const registration = await manager.getRegistration();
 
       expect(registration).toBe(mockRegistration);
+    });
+
+    it('should get cache status', async () => {
+      const manager = getServiceWorkerManager();
+      const status = await manager.getCacheStatus();
+
+      expect(Array.isArray(status)).toBe(true);
+    });
+
+    it('should cleanup caches', async () => {
+      const manager = getServiceWorkerManager();
+      
+      // Should not throw
+      await manager.cleanupCaches();
+    });
+
+    it('should warm cache with URLs', async () => {
+      const manager = getServiceWorkerManager();
+      const urls = ['https://example.com/api/test', '/static/image.png'];
+      
+      // Mock fetch for cache warming
+      global.fetch = jest.fn().mockResolvedValue({
+        ok: true,
+        status: 200,
+        clone: () => ({ ok: true, status: 200 }),
+      });
+      
+      await manager.warmCache(urls);
+      
+      expect(global.fetch).toHaveBeenCalledTimes(urls.length);
+    });
+
+    it('should get cache manager', () => {
+      const manager = getServiceWorkerManager();
+      const cacheManager = manager.getCacheManager();
+
+      expect(cacheManager).toBeDefined();
+      expect(typeof cacheManager.getStatus).toBe('function');
     });
 
     it('should handle update events', async () => {

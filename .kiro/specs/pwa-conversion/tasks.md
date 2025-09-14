@@ -8,7 +8,7 @@
   - Write unit tests for PWA configuration and manifest generation
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
-- [ ] 2. Implement core service worker functionality
+- [x] 2. Implement core service worker functionality
   - Create service worker with cache-first strategy for static assets
   - Implement network-first strategy for API calls with fallback caching
   - Add stale-while-revalidate strategy for frequently updated content

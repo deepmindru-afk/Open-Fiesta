@@ -62,6 +62,111 @@ global.IntersectionObserver = jest.fn().mockImplementation(() => ({
   disconnect: jest.fn(),
 }))
 
+// Mock Web APIs for PWA tests
+global.Request = class Request {
+  constructor(url, options = {}) {
+    this.url = url
+    this.method = options.method || 'GET'
+    this.headers = new Headers(options.headers)
+  }
+}
+
+global.Response = class Response {
+  constructor(body, options = {}) {
+    this.body = body
+    this.status = options.status || 200
+    this.statusText = options.statusText || 'OK'
+    this.headers = new Headers(options.headers)
+    this.ok = this.status >= 200 && this.status < 300
+    this.type = 'basic'
+  }
+  
+  clone() {
+    return new Response(this.body, {
+      status: this.status,
+      statusText: this.statusText,
+      headers: this.headers
+    })
+  }
+  
+  async blob() {
+    return { size: this.body ? this.body.length : 0 }
+  }
+  
+  async json() {
+    return JSON.parse(this.body)
+  }
+  
+  async text() {
+    return this.body
+  }
+}
+
+global.Headers = class Headers {
+  constructor(init = {}) {
+    this.headers = new Map()
+    if (init) {
+      if (init instanceof Headers) {
+        // Copy from another Headers instance
+        init.headers.forEach((value, key) => {
+          this.headers.set(key, value)
+        })
+      } else {
+        // Copy from object
+        Object.entries(init).forEach(([key, value]) => {
+          this.headers.set(key.toLowerCase(), value)
+        })
+      }
+    }
+  }
+  
+  get(name) {
+    return this.headers.get(name.toLowerCase()) || null
+  }
+  
+  set(name, value) {
+    this.headers.set(name.toLowerCase(), value)
+    return this
+  }
+  
+  has(name) {
+    return this.headers.has(name.toLowerCase())
+  }
+  
+  delete(name) {
+    this.headers.delete(name.toLowerCase())
+  }
+  
+  forEach(callback) {
+    this.headers.forEach(callback)
+  }
+}
+
+// Use the native URL if available, otherwise provide a simple mock
+if (typeof globalThis.URL === 'undefined') {
+  global.URL = class URL {
+    constructor(url, base) {
+      this.href = url
+      this.protocol = 'https:'
+      this.host = 'example.com'
+      this.hostname = 'example.com'
+      this.port = ''
+      this.pathname = '/test'
+      this.search = ''
+      this.hash = ''
+      this.searchParams = {
+        delete: jest.fn(),
+        get: jest.fn(),
+        set: jest.fn(),
+      }
+    }
+    
+    toString() {
+      return this.href
+    }
+  }
+}
+
 // Mock matchMedia (only in jsdom environment)
 if (typeof window !== 'undefined') {
   Object.defineProperty(window, 'matchMedia', {
