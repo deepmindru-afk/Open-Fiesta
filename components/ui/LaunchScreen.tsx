@@ -2,32 +2,41 @@
 
 import { useTheme } from '@/lib/themeContext';
 import { cn } from '@/lib/utils';
+import { isStandalone } from '@/lib/pwa-config';
 
 interface LaunchScreenProps {
-  backgroundClass: string;
+  backgroundClass?: string;
   title?: string;
   subtitle?: string;
   logoSrc?: string;
   dismissed?: boolean;
+  isPWA?: boolean;
 }
 
 export default function LaunchScreen({
-  backgroundClass,
+  backgroundClass = '',
   title = 'Open Fiesta',
   subtitle = 'Warming things up…',
   logoSrc = '/brand.svg',
   dismissed = false,
+  isPWA,
 }: LaunchScreenProps) {
   const { theme } = useTheme();
   const isDark = theme.mode === 'dark';
+  const isStandaloneMode = isPWA ?? isStandalone();
   return (
     <div
       className={cn(
         "min-h-screen w-full relative transition-opacity duration-300 ease-out",
         backgroundClass,
         isDark ? "text-white" : "text-gray-800",
-        dismissed ? 'opacity-0 pointer-events-none' : 'opacity-100'
+        dismissed ? 'opacity-0 pointer-events-none' : 'opacity-100',
+        isStandaloneMode && "pwa-launch-screen"
       )}
+      style={{
+        paddingTop: isStandaloneMode ? 'env(safe-area-inset-top)' : undefined,
+        paddingBottom: isStandaloneMode ? 'env(safe-area-inset-bottom)' : undefined,
+      }}
     >
       <div
         className={`absolute inset-0 z-0 pointer-events-none opacity-95 transition-opacity duration-300 ease-out ${dismissed ? 'opacity-0' : 'opacity-95'}`}
