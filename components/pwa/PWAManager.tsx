@@ -6,6 +6,7 @@ import InstallPrompt from './InstallPrompt';
 import InstallBanner from './InstallBanner';
 import PWALaunchScreen from './PWALaunchScreen';
 import { ServiceWorkerUpdate } from './ServiceWorkerUpdate';
+import PWAErrorBoundary from './PWAErrorBoundary';
 import { injectPWAStyles } from '@/lib/pwa-styles';
 import { isPWAEnabled, isStandalone } from '@/lib/pwa-config';
 
@@ -97,78 +98,82 @@ export const PWAManager: React.FC<PWAManagerProps> = ({
   }
 
   return (
-    <StandaloneProvider>
-      {/* PWA Launch Screen */}
-      {isLaunchScreenVisible && (
-        <PWALaunchScreen
-          duration={launchScreenDuration}
-          onComplete={() => setIsLaunchScreenVisible(false)}
-        />
-      )}
-
-      {/* Main App Content */}
-      <div className="pwa-app-container">
-        {children}
-      </div>
-
-      {/* PWA Install Components */}
-      {!isStandalone() && (
-        <>
-          {/* Install Banner */}
-          {showBanner && showInstallBanner && (
-            <InstallBanner
-              variant={bannerVariant}
-              onInstall={handleInstall}
-              onDismiss={handleDismiss}
+    <PWAErrorBoundary>
+      <StandaloneProvider>
+        {/* PWA Launch Screen */}
+        {isLaunchScreenVisible && (
+          <PWAErrorBoundary>
+            <PWALaunchScreen
+              duration={launchScreenDuration}
+              onComplete={() => setIsLaunchScreenVisible(false)}
             />
-          )}
+          </PWAErrorBoundary>
+        )}
 
-          {/* Install Prompt */}
-          {showPrompt && showInstallPrompt && (
-            <InstallPrompt
-              onInstall={handleInstall}
-              onDismiss={handleDismiss}
-            />
-          )}
-        </>
-      )}
+        {/* Main App Content */}
+        <div className="pwa-app-container">
+          {children}
+        </div>
 
-      {/* Service Worker Update Notification */}
-      <ServiceWorkerUpdate />
+        {/* PWA Install Components */}
+        {!isStandalone() && (
+          <>
+            {/* Install Banner */}
+            {showBanner && showInstallBanner && (
+              <PWAErrorBoundary>
+                <InstallBanner
+                  variant={bannerVariant}
+                  onInstall={handleInstall}
+                  onDismiss={handleDismiss}
+                />
+              </PWAErrorBoundary>
+            )}
 
-      {/* PWA-specific styles */}
-      <style jsx global>{`
-        .pwa-app-container {
-          min-height: 100vh;
-          display: flex;
-          flex-direction: column;
-        }
-        
-        /* PWA standalone mode adjustments */
-        .pwa-standalone .pwa-app-container {
-          min-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-          padding-top: env(safe-area-inset-top);
-          padding-bottom: env(safe-area-inset-bottom);
-          padding-left: env(safe-area-inset-left);
-          padding-right: env(safe-area-inset-right);
-        }
-        
-        /* Prevent overscroll in PWA mode */
-        .pwa-standalone {
-          overscroll-behavior: none;
-        }
-        
-        /* Hide scrollbars in standalone mode for cleaner look */
-        .pwa-standalone::-webkit-scrollbar {
-          display: none;
-        }
-        
-        .pwa-standalone {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
-    </StandaloneProvider>
+            {/* Install Prompt */}
+            {showPrompt && showInstallPrompt && (
+              <PWAErrorBoundary>
+                <InstallPrompt
+                  onInstall={handleInstall}
+                  onDismiss={handleDismiss}
+                />
+              </PWAErrorBoundary>
+            )}
+          </>
+        )}
+
+        {/* Service Worker Update Notification */}
+        <PWAErrorBoundary>
+          <ServiceWorkerUpdate />
+        </PWAErrorBoundary>
+
+        {/* PWA-specific styles */}
+        <style jsx global>{`
+          .pwa-app-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+          }
+          
+          .pwa-standalone .pwa-app-container {
+            min-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+          }
+          
+          .pwa-standalone {
+            overscroll-behavior: none;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
+          
+          .pwa-standalone::-webkit-scrollbar {
+            display: none;
+          }
+        `}</style>
+      </StandaloneProvider>
+    </PWAErrorBoundary>
   );
 };
 

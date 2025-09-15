@@ -74,6 +74,10 @@ describe('StandaloneDetector', () => {
     });
 
     it('should detect standalone mode', async () => {
+      // Clear and reset mocks
+      mockIsStandalone.mockClear();
+      mockGetInstallSource.mockClear();
+      
       mockIsStandalone.mockReturnValue(true);
       mockGetInstallSource.mockReturnValue('installed');
 

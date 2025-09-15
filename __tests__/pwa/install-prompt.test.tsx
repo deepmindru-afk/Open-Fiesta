@@ -1,23 +1,17 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { jest } from '@jest/globals';
 import InstallPrompt from '@/components/pwa/InstallPrompt';
+import { setupPWAMocks, createMockBeforeInstallPromptEvent } from './test-utils';
 
 // Mock PWA config
 jest.mock('@/lib/pwa-config', () => ({
   isStandalone: jest.fn(() => false),
-  canInstall: jest.fn(() => true),
 }));
 
-// Mock beforeinstallprompt event
-const mockBeforeInstallPromptEvent = {
-  preventDefault: jest.fn(),
-  prompt: jest.fn().mockResolvedValue(undefined),
-  userChoice: Promise.resolve({ outcome: 'accepted', platform: 'web' }),
-  platforms: ['web'],
-};
-
 describe('InstallPrompt', () => {
+  let mockBeforeInstallPromptEvent: ReturnType<typeof createMockBeforeInstallPromptEvent>;
+
   beforeEach(() => {
     // Clear session storage
     sessionStorage.clear();
@@ -25,16 +19,8 @@ describe('InstallPrompt', () => {
     // Reset mocks
     jest.clearAllMocks();
     
-    // Mock window.addEventListener
-    Object.defineProperty(window, 'addEventListener', {
-      value: jest.fn(),
-      writable: true,
-    });
-    
-    Object.defineProperty(window, 'removeEventListener', {
-      value: jest.fn(),
-      writable: true,
-    });
+    setupPWAMocks();
+    mockBeforeInstallPromptEvent = createMockBeforeInstallPromptEvent();
   });
 
   it('should render install prompt when installable', () => {

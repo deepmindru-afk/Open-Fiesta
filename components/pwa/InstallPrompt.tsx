@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, Download, Smartphone, Monitor, Zap, Wifi, Bell } from 'lucide-react';
-import { isStandalone, canInstall } from '@/lib/pwa-config';
+import { X, Download, Zap, Wifi, Bell } from 'lucide-react';
+import { isStandalone } from '@/lib/pwa-config';
 
 interface BeforeInstallPromptEvent extends Event {
-  readonly platforms: string[];
+  readonly platforms: ReadonlyArray<string>;
   readonly userChoice: Promise<{
     outcome: 'accepted' | 'dismissed';
     platform: string;
@@ -30,6 +30,8 @@ export const InstallPrompt: React.FC<InstallPromptProps> = ({
   const [isDismissed, setIsDismissed] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
+
     // Check if already dismissed in this session
     const dismissed = sessionStorage.getItem('pwa-install-dismissed');
     if (dismissed) {
@@ -45,20 +47,25 @@ export const InstallPrompt: React.FC<InstallPromptProps> = ({
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
       const promptEvent = e as BeforeInstallPromptEvent;
-      setDeferredPrompt(promptEvent);
-      setIsVisible(true);
+      if (isMounted) {
+        setDeferredPrompt(promptEvent);
+        setIsVisible(true);
+      }
     };
 
     const handleAppInstalled = () => {
-      setDeferredPrompt(null);
-      setIsVisible(false);
-      onInstall?.();
+      if (isMounted) {
+        setDeferredPrompt(null);
+        setIsVisible(false);
+        onInstall?.();
+      }
     };
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     window.addEventListener('appinstalled', handleAppInstalled);
 
     return () => {
+      isMounted = false;
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('appinstalled', handleAppInstalled);
     };
@@ -74,13 +81,28 @@ export const InstallPrompt: React.FC<InstallPromptProps> = ({
       const choiceResult = await deferredPrompt.userChoice;
       
       if (choiceResult.outcome === 'accepted') {
-        console.log('PWA installation accepted');
+        // Track successful installation
+        if (typeof window !== 'undefined' && (window as any).gtag) {
+          (window as any).gtag('event', 'pwa_install_success', {
+            event_category: 'PWA',
+            event_label: 'install_prompt',
+          });
+        }
         onInstall?.();
       } else {
-        console.log('PWA installation dismissed');
+        // Track dismissal
+        if (typeof window !== 'undefined' && (window as any).gtag) {
+          (window as any).gtag('event', 'pwa_install_dismissed', {
+            event_category: 'PWA',
+            event_label: 'install_prompt',
+          });
+        }
       }
     } catch (error) {
-      console.error('Error during PWA installation:', error);
+      console.error('Error during PWA installation:', error instanceof Error ? error.message : 'Unknown error');
+      // Reset state on error
+      setIsInstalling(false);
+      setIsVisible(false);
     } finally {
       setDeferredPrompt(null);
       setIsVisible(false);

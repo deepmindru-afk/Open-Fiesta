@@ -189,12 +189,27 @@ describe('usePWAUI', () => {
     const { isStandalone } = await import('@/lib/pwa-config');
     (isStandalone as jest.Mock).mockReturnValue(true);
 
+    // Mock getComputedStyle to return safe area insets
+    const originalGetComputedStyle = window.getComputedStyle;
+    window.getComputedStyle = jest.fn(() => ({
+      getPropertyValue: jest.fn((prop: string) => {
+        if (prop === 'env(safe-area-inset-top)') return '20px';
+        if (prop === 'env(safe-area-inset-bottom)') return '10px';
+        if (prop === 'env(safe-area-inset-left)') return '0px';
+        if (prop === 'env(safe-area-inset-right)') return '0px';
+        return '';
+      }),
+    })) as any;
+
     const { result } = renderHook(() => usePWAUI());
 
     await waitFor(() => {
       const viewportHeight = result.current.getViewportHeight();
       expect(viewportHeight).toBe('calc(100vh - 30px)'); // 20 + 10
     });
+
+    // Restore original getComputedStyle
+    window.getComputedStyle = originalGetComputedStyle;
   });
 
   it('should calculate viewport height for browser mode', async () => {
@@ -270,9 +285,9 @@ describe('usePWAUI', () => {
   it('should handle orientation change events', async () => {
     const { result } = renderHook(() => usePWAUI());
 
-    // Verify event listeners are added
-    expect(mockAddEventListener).toHaveBeenCalledWith('orientationchange', expect.any(Function));
-    expect(mockAddEventListener).toHaveBeenCalledWith('resize', expect.any(Function));
+    // Verify event listeners are added (with passive option)
+    expect(mockAddEventListener).toHaveBeenCalledWith('orientationchange', expect.any(Function), { passive: true });
+    expect(mockAddEventListener).toHaveBeenCalledWith('resize', expect.any(Function), { passive: true });
 
     // Simulate orientation change
     Object.defineProperty(window, 'innerHeight', {

@@ -1,33 +1,48 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import { jest } from '@jest/globals';
 
-// Mock the entire PWALaunchScreen component to avoid theme provider issues
-const MockPWALaunchScreen = jest.fn(({ title = 'Open Fiesta', subtitle = 'AI Chat Platform', className = '', onComplete, duration = 2000 }) => {
-  React.useEffect(() => {
-    if (onComplete) {
-      const timer = setTimeout(onComplete, duration);
-      return () => clearTimeout(timer);
-    }
-  }, [onComplete, duration]);
+// Create a mock theme context
+const mockThemeContext = {
+  theme: {
+    mode: 'dark' as const,
+    accent: 'crimson' as const,
+    font: 'geist' as const,
+    background: 'gradient' as const,
+    badgePair: 'gold-green' as const,
+    chatInputStyle: 'default' as const,
+  },
+  setMode: jest.fn(),
+  setAccent: jest.fn(),
+  setFont: jest.fn(),
+  setBackground: jest.fn(),
+  setBadgePair: jest.fn(),
+  toggleMode: jest.fn(),
+  resetTheme: jest.fn(),
+  updateTheme: jest.fn(),
+  isLoading: false,
+  isInitialized: true,
+};
 
-  return (
-    <div className={`pwa-launch-screen ${className}`} data-testid="pwa-launch-screen">
-      <h1>{title}</h1>
-      <p>{subtitle}</p>
-    </div>
-  );
+// Mock the entire theme context module
+jest.mock('@/lib/themeContext', () => {
+  const React = require('react');
+  const ThemeContext = React.createContext(null);
+  
+  return {
+    useTheme: () => mockThemeContext,
+    ThemeProvider: ({ children }: { children: React.ReactNode }) => 
+      React.createElement(ThemeContext.Provider, { value: mockThemeContext }, children),
+  };
 });
-
-jest.mock('@/components/pwa/PWALaunchScreen', () => ({
-  __esModule: true,
-  default: MockPWALaunchScreen,
-}));
 
 // Mock PWA config
 jest.mock('@/lib/pwa-config', () => ({
   isStandalone: jest.fn(() => true),
 }));
+
+// Import the actual component after mocking dependencies
+import PWALaunchScreen from '@/components/pwa/PWALaunchScreen';
 
 describe('PWALaunchScreen', () => {
   beforeEach(() => {
@@ -40,7 +55,6 @@ describe('PWALaunchScreen', () => {
   });
 
   it('should render launch screen with default props', () => {
-    const PWALaunchScreen = require('@/components/pwa/PWALaunchScreen').default;
     render(<PWALaunchScreen />);
 
     expect(screen.getByText('Open Fiesta')).toBeInTheDocument();
@@ -48,7 +62,6 @@ describe('PWALaunchScreen', () => {
   });
 
   it('should render with custom title and subtitle', () => {
-    const PWALaunchScreen = require('@/components/pwa/PWALaunchScreen').default;
     render(
       <PWALaunchScreen 
         title="Custom App" 
@@ -133,14 +146,15 @@ describe('PWALaunchScreen', () => {
   });
 
   it('should handle light theme', () => {
-    const { useTheme } = require('@/lib/themeContext');
-    useTheme.mockReturnValueOnce({
-      theme: { mode: 'light' },
-    });
+    // Temporarily override the theme for this test
+    mockThemeContext.theme.mode = 'light';
 
     render(<PWALaunchScreen />);
 
     // Should render without errors in light mode
     expect(screen.getByText('Open Fiesta')).toBeInTheDocument();
+    
+    // Reset to dark mode for other tests
+    mockThemeContext.theme.mode = 'dark';
   });
 });

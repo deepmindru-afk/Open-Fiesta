@@ -139,12 +139,17 @@ describe('OfflineDataLayer', () => {
 
   describe('isDataStale', () => {
     it('should return true for stale data', async () => {
+      // Mock online status and successful fetch
+      mockOfflineManager.isOnline.mockReturnValue(true);
+      mockFetchThreads.mockResolvedValue([mockThread]);
+      
       // First load to set sync time
       await offlineDataLayer.loadThreads(mockUserId, true);
       
       // Mock time passage (more than 5 minutes)
       const originalNow = Date.now;
-      Date.now = jest.fn(() => originalNow() + 6 * 60 * 1000);
+      const futureTime = Date.now() + 6 * 60 * 1000;
+      Date.now = jest.fn(() => futureTime);
       
       const isStale = await offlineDataLayer.isDataStale(mockUserId);
       
@@ -172,6 +177,9 @@ describe('OfflineDataLayer', () => {
 
   describe('getLastSyncTime', () => {
     it('should return null when no syncs recorded', async () => {
+      // Clear any existing sync times first
+      await offlineDataLayer.clearCache();
+      
       const lastSync = await offlineDataLayer.getLastSyncTime();
       
       expect(lastSync).toBeNull();

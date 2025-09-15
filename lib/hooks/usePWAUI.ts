@@ -17,6 +17,15 @@ interface PWAUIState {
   isInstallable: boolean;
 }
 
+/**
+ * Custom hook for PWA UI adjustments and responsive behavior
+ * 
+ * @returns {Object} PWA UI state and utility functions
+ * @example
+ * ```tsx
+ * const { isStandalone, getStandaloneStyles, shouldShowInstallPrompt } = usePWAUI();
+ * ```
+ */
 export const usePWAUI = () => {
   const [state, setState] = useState<PWAUIState>({
     isStandalone: false,
@@ -69,9 +78,11 @@ export const usePWAUI = () => {
 
     updatePWAState();
 
-    // Listen for orientation changes
+    // Listen for orientation changes with debounce
+    let orientationTimeout: NodeJS.Timeout;
     const handleOrientationChange = () => {
-      setTimeout(updatePWAState, 100); // Small delay to ensure dimensions are updated
+      clearTimeout(orientationTimeout);
+      orientationTimeout = setTimeout(updatePWAState, 100); // Small delay to ensure dimensions are updated
     };
 
     // Listen for display mode changes
@@ -96,8 +107,8 @@ export const usePWAUI = () => {
     };
 
     // Add event listeners
-    window.addEventListener('orientationchange', handleOrientationChange);
-    window.addEventListener('resize', handleOrientationChange);
+    window.addEventListener('orientationchange', handleOrientationChange, { passive: true });
+    window.addEventListener('resize', handleOrientationChange, { passive: true });
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     window.addEventListener('appinstalled', handleAppInstalled);
     
@@ -106,6 +117,7 @@ export const usePWAUI = () => {
     minimalUIMediaQuery.addEventListener('change', handleDisplayModeChange);
 
     return () => {
+      clearTimeout(orientationTimeout);
       window.removeEventListener('orientationchange', handleOrientationChange);
       window.removeEventListener('resize', handleOrientationChange);
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);

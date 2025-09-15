@@ -259,7 +259,7 @@ export const PWA_BASE_STYLES = `
 /**
  * Inject PWA styles into the document
  */
-export const injectPWAStyles = () => {
+export const injectPWAStyles = (): void => {
   if (typeof document === 'undefined') return;
   
   const existingStyle = document.getElementById('pwa-styles');

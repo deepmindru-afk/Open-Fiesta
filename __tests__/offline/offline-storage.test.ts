@@ -5,23 +5,33 @@
 import { offlineStorage } from '@/lib/offline/storage';
 import type { CachedConversation, OfflineQueueItem } from '@/lib/offline/types';
 
-// Mock IndexedDB
-const mockIDBRequest = {
-  result: null,
-  error: null,
-  onsuccess: null as any,
-  onerror: null as any,
-};
+// Create a more complete IndexedDB mock
+class MockIDBRequest {
+  result: any = null;
+  error: any = null;
+  onsuccess: ((event: any) => void) | null = null;
+  onerror: ((event: any) => void) | null = null;
+
+  constructor(result?: any) {
+    this.result = result;
+    // Simulate async completion
+    setTimeout(() => {
+      if (this.onsuccess) {
+        this.onsuccess({ target: this });
+      }
+    }, 0);
+  }
+}
 
 const mockObjectStore = {
-  put: jest.fn(() => mockIDBRequest),
-  get: jest.fn(() => mockIDBRequest),
-  getAll: jest.fn(() => mockIDBRequest),
-  delete: jest.fn(() => mockIDBRequest),
-  clear: jest.fn(() => mockIDBRequest),
+  put: jest.fn(() => new MockIDBRequest()),
+  get: jest.fn(() => new MockIDBRequest()),
+  getAll: jest.fn(() => new MockIDBRequest([])),
+  delete: jest.fn(() => new MockIDBRequest()),
+  clear: jest.fn(() => new MockIDBRequest()),
   createIndex: jest.fn(),
   index: jest.fn(() => ({
-    getAll: jest.fn(() => mockIDBRequest),
+    getAll: jest.fn(() => new MockIDBRequest([])),
   })),
 };
 
@@ -37,16 +47,22 @@ const mockIDBDatabase = {
   createObjectStore: jest.fn(() => mockObjectStore),
 };
 
-const mockIDBOpenRequest = {
-  ...mockIDBRequest,
-  onupgradeneeded: null as any,
-};
+class MockIDBOpenRequest extends MockIDBRequest {
+  onupgradeneeded: ((event: any) => void) | null = null;
+
+  constructor() {
+    super(mockIDBDatabase);
+  }
+}
 
 // Mock IndexedDB
+const mockIndexedDB = {
+  open: jest.fn(() => new MockIDBOpenRequest()),
+};
+
 Object.defineProperty(window, 'indexedDB', {
-  value: {
-    open: jest.fn(() => mockIDBOpenRequest),
-  },
+  value: mockIndexedDB,
+  writable: true,
 });
 
 // Mock navigator.storage
@@ -54,41 +70,26 @@ Object.defineProperty(navigator, 'storage', {
   value: {
     estimate: jest.fn(() => Promise.resolve({ usage: 1000, quota: 10000 })),
   },
+  writable: true,
 });
 
 describe('OfflineStorage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    
-    // Simulate successful IndexedDB operations
-    mockIDBOpenRequest.onsuccess = () => {
-      mockIDBOpenRequest.result = mockIDBDatabase;
-    };
-    
-    mockIDBRequest.onsuccess = () => {
-      // Default to empty result
-      mockIDBRequest.result = null;
-    };
   });
 
   describe('Initialization', () => {
     it('should initialize the database', async () => {
       await offlineStorage.init();
       
-      expect(window.indexedDB.open).toHaveBeenCalledWith('OpenFiestaOffline', 1);
+      expect(mockIndexedDB.open).toHaveBeenCalledWith('OpenFiestaOffline', 1);
     });
 
     it('should create object stores on upgrade', async () => {
-      // Simulate upgrade needed
-      mockIDBOpenRequest.onupgradeneeded = (event: any) => {
-        const db = mockIDBDatabase;
-        mockIDBOpenRequest.result = db;
-      };
-
       await offlineStorage.init();
       
       // Verify that the upgrade handler would create stores
-      expect(true).toBe(true); // Placeholder assertion
+      expect(mockIndexedDB.open).toHaveBeenCalled();
     });
   });
 

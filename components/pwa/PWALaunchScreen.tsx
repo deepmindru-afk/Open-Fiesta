@@ -48,9 +48,11 @@ export const PWALaunchScreen: React.FC<PWALaunchScreenProps> = ({
     // Hide launch screen after duration
     const hideTimer = setTimeout(() => {
       setIsVisible(false);
-      setTimeout(() => {
+      const fadeTimer = setTimeout(() => {
         onComplete?.();
       }, 300); // Wait for fade out animation
+      
+      return () => clearTimeout(fadeTimer);
     }, duration);
 
     return () => {

@@ -11,6 +11,47 @@ import type { ChatMessage, ChatThread } from '@/lib/types';
 jest.mock('@/lib/db/threads');
 jest.mock('@/lib/db/messages');
 
+// Mock IndexedDB globally to avoid redefinition issues
+const mockIDBRequest = {
+  result: null as any,
+  error: null,
+  onsuccess: null as any,
+  onerror: null as any,
+};
+
+const mockObjectStore = {
+  put: jest.fn(() => mockIDBRequest),
+  get: jest.fn(() => mockIDBRequest),
+  getAll: jest.fn(() => mockIDBRequest),
+  delete: jest.fn(() => mockIDBRequest),
+  clear: jest.fn(() => mockIDBRequest),
+  createIndex: jest.fn(),
+  index: jest.fn(() => ({ getAll: jest.fn(() => mockIDBRequest) })),
+};
+
+const mockTransaction = {
+  objectStore: jest.fn(() => mockObjectStore),
+};
+
+const mockDatabase = {
+  transaction: jest.fn(() => mockTransaction),
+  objectStoreNames: { contains: jest.fn(() => false) },
+  createObjectStore: jest.fn(() => mockObjectStore),
+};
+
+const mockOpenRequest = {
+  ...mockIDBRequest,
+  onupgradeneeded: null as any,
+};
+
+// Set up IndexedDB mock once
+if (!window.indexedDB) {
+  Object.defineProperty(window, 'indexedDB', {
+    value: { open: jest.fn(() => mockOpenRequest) },
+    writable: true,
+  });
+}
+
 describe('Offline Functionality Integration Tests', () => {
   const mockUserId = 'test-user-123';
   const mockChatId = 'test-chat-456';
@@ -22,43 +63,6 @@ describe('Offline Functionality Integration Tests', () => {
     Object.defineProperty(navigator, 'onLine', {
       writable: true,
       value: true,
-    });
-
-    // Mock IndexedDB
-    const mockIDBRequest = {
-      result: null,
-      error: null,
-      onsuccess: null as any,
-      onerror: null as any,
-    };
-
-    const mockObjectStore = {
-      put: jest.fn(() => mockIDBRequest),
-      get: jest.fn(() => mockIDBRequest),
-      getAll: jest.fn(() => mockIDBRequest),
-      delete: jest.fn(() => mockIDBRequest),
-      clear: jest.fn(() => mockIDBRequest),
-      createIndex: jest.fn(),
-      index: jest.fn(() => ({ getAll: jest.fn(() => mockIDBRequest) })),
-    };
-
-    const mockTransaction = {
-      objectStore: jest.fn(() => mockObjectStore),
-    };
-
-    const mockDatabase = {
-      transaction: jest.fn(() => mockTransaction),
-      objectStoreNames: { contains: jest.fn(() => false) },
-      createObjectStore: jest.fn(() => mockObjectStore),
-    };
-
-    const mockOpenRequest = {
-      ...mockIDBRequest,
-      onupgradeneeded: null as any,
-    };
-
-    Object.defineProperty(window, 'indexedDB', {
-      value: { open: jest.fn(() => mockOpenRequest) },
     });
 
     // Simulate successful operations

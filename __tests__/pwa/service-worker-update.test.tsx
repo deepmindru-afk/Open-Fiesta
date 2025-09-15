@@ -164,12 +164,12 @@ describe('ServiceWorkerUpdate Component', () => {
   });
 
   it('should handle service worker update error', async () => {
+    const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+    
     // Mock the service worker manager to throw an error
     const { getServiceWorkerManager } = require('../../lib/service-worker');
     const mockManager = getServiceWorkerManager();
     mockManager.skipWaiting = jest.fn().mockRejectedValue(new Error('Update failed'));
-
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
 
     render(<ServiceWorkerUpdate onUpdate={mockOnUpdate} onDismiss={mockOnDismiss} />);
     
