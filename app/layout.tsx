@@ -189,6 +189,16 @@ export const metadata: Metadata = {
   },
 }
 
+/**
+ * Root layout component for the application.
+ *
+ * Renders the top-level HTML structure, global <head> metadata (SEO, social, and PWA tags),
+ * and site-wide JSON-LD structured data. Wraps page content with authentication and theme
+ * providers so all pages share the same context and styles.
+ *
+ * @param children - React node(s) to be rendered inside the app providers.
+ * @returns The root HTML element tree for the application.
+ */
 export default function RootLayout({
   children,
 }: Readonly<{

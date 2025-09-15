@@ -6,7 +6,16 @@ const path = require('path');
 // Icon sizes needed for PWA
 const iconSizes = [72, 96, 128, 144, 152, 192, 384, 512];
 
-// Create placeholder SVG icons based on the existing brand
+/**
+ * Generate an SVG string for a square placeholder app icon at a given pixel size.
+ *
+ * The produced SVG uses a black rounded-rect background, a white circular mark centered
+ * in the artboard, and the bold text "OF" centered over the circle. Intended as a
+ * temporary placeholder; for production use convert the SVG to PNG at the target size.
+ *
+ * @param {number} size - Icon edge length in pixels (positive number). Controls viewBox, corner radius, and element scaling.
+ * @returns {string} SVG markup for the placeholder icon sized to the given dimensions.
+ */
 function createPlaceholderIcon(size) {
   const svg = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
   <rect width="${size}" height="${size}" fill="#000000" rx="${size * 0.1}"/>
@@ -16,7 +25,18 @@ function createPlaceholderIcon(size) {
   return svg;
 }
 
-// Create shortcut icons
+/**
+ * Generate an SVG string for a square shortcut icon of the given size and type.
+ *
+ * Produces a black rounded-square background with a white glyph centered at the icon's midpoint.
+ * Supported types:
+ *  - "new-chat": a simple horizontal and vertical line cross (abstract chat symbol).
+ *  - "settings": a ring-like circle with a filled center dot.
+ *
+ * @param {string} type - Icon variant; must be "new-chat" or "settings".
+ * @param {number} size - Output SVG width and height in pixels; used to scale glyph strokes and radii.
+ * @return {string} An SVG markup string sized to `${size}x${size}` containing the icon.
+ */
 function createShortcutIcon(type, size) {
   let content = '';
   if (type === 'new-chat') {

@@ -25,6 +25,18 @@ export interface UseOfflineReturn {
   getStorageUsage: () => Promise<{ used: number; quota: number; percentage: number }>;
 }
 
+/**
+ * React hook that exposes offline chat capabilities backed by the shared offlineManager.
+ *
+ * Returns the current offline `status` (keeps it updated by subscribing to the manager) and a set
+ * of actions that delegate to `offlineManager` for sending messages, creating/updating/deleting
+ * threads, reading cached conversations, forcing a sync, clearing offline data, and checking
+ * storage usage.
+ *
+ * The returned `isOnline` mirrors `status.isOnline`. `syncNow()` will only trigger a sync when
+ * the client is online and a sync is not already in progress. All action methods return the
+ * promises produced by `offlineManager` (no additional error handling is applied here).
+ */
 export function useOffline(): UseOfflineReturn {
   const [status, setStatus] = useState<OfflineStatus>({
     isOnline: navigator.onLine,

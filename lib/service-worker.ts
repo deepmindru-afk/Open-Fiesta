@@ -244,7 +244,13 @@ export function getServiceWorkerManager(): ServiceWorkerManager {
 }
 
 /**
- * Register service worker with error handling
+ * Registers the application's service worker and returns its registration.
+ *
+ * Resolves with the ServiceWorkerRegistration when registration succeeds, or
+ * with `null` if service workers are not supported, PWA support is disabled,
+ * or registration fails.
+ *
+ * @returns The new ServiceWorkerRegistration, or `null` on unsupported/failed registration
  */
 export async function registerServiceWorker(): Promise<ServiceWorkerRegistration | null> {
   const manager = getServiceWorkerManager();
@@ -252,7 +258,12 @@ export async function registerServiceWorker(): Promise<ServiceWorkerRegistration
 }
 
 /**
- * Unregister service worker
+ * Unregister the currently registered service worker, if any.
+ *
+ * Resolves to `true` if a service worker registration was found and successfully unregistered;
+ * resolves to `false` if no registration existed or unregistration did not occur.
+ *
+ * @returns A promise that resolves to a boolean indicating whether unregistration occurred.
  */
 export async function unregisterServiceWorker(): Promise<boolean> {
   const manager = getServiceWorkerManager();
@@ -272,7 +283,18 @@ export async function isServiceWorkerActive(): Promise<boolean> {
 }
 
 /**
- * Get service worker registration status
+ * Returns the current service worker support and registration state.
+ *
+ * Resolves to an object describing whether service workers are supported in the
+ * current environment and whether a registration is present, including the
+ * presence of active, waiting, and installing workers.
+ *
+ * @returns An object with:
+ *  - `supported` — true if the browser exposes `navigator.serviceWorker`.
+ *  - `registered` — true if a ServiceWorkerRegistration is available.
+ *  - `active` — true if the registration has an active worker.
+ *  - `waiting` — true if the registration has a waiting worker.
+ *  - `installing` — true if the registration has an installing worker.
  */
 export async function getServiceWorkerStatus(): Promise<{
   supported: boolean;

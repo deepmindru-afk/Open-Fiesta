@@ -13,6 +13,22 @@ interface LaunchScreenProps {
   isPWA?: boolean;
 }
 
+/**
+ * A themable, accessible launch screen UI with optional branding and PWA standalone adjustments.
+ *
+ * Renders a full-screen centered status card with optional logo, title, subtitle, and a subtle
+ * progress sheen. Adapts colors for dark/light themes, supports hiding via `dismissed`, and when
+ * running as a PWA (or when `isPWA` is true) applies safe-area padding and a `pwa-launch-screen`
+ * class for standalone display.
+ *
+ * @param backgroundClass - Optional additional CSS classes applied to the outer container.
+ * @param title - Main heading text shown on the card (defaults to "Open Fiesta").
+ * @param subtitle - Subheading text shown below the title (defaults to "Warming things up…").
+ * @param logoSrc - URL for the brand/logo image; when falsy the logo block is omitted.
+ * @param dismissed - When true, reduces opacity and disables pointer events to hide the screen.
+ * @param isPWA - If provided, forces PWA standalone mode; otherwise standalone detection is used.
+ * @returns A React element representing the launch screen.
+ */
 export default function LaunchScreen({
   backgroundClass = '',
   title = 'Open Fiesta',

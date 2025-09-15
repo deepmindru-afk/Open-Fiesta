@@ -128,7 +128,21 @@ self.addEventListener('message', (event) => {
 });
 
 /**
- * Cache-first strategy: Check cache first, fallback to network
+ * Serve a request using a cache-first strategy: return a valid cached response if available,
+ * otherwise fetch from the network, store a timestamped copy in the specified cache, and return
+ * the network response.
+ *
+ * If the cached response exists but is expired, this function will perform a network fetch and
+ * replace the cached entry. Successful network responses are timestamped (via addTimestamp)
+ * before being stored and will trigger enforceMaxEntries for the cache.
+ *
+ * On error, attempts to return any stale cached response as a fallback; if none is available the
+ * original error is rethrown.
+ *
+ * @param {Request} request - The request to satisfy.
+ * @param {string} cacheName - Name of the cache to open/store entries (used for expiration and limits).
+ * @returns {Promise<Response>} A response from cache or network.
+ * @throws Will rethrow the original error if network/cache access fails and no cached fallback exists.
  */
 async function cacheFirstStrategy(request, cacheName) {
   try {
@@ -163,7 +177,18 @@ async function cacheFirstStrategy(request, cacheName) {
 }
 
 /**
- * Network-first strategy: Try network first, fallback to cache
+ * Network-first fetch strategy: attempt a network request and fall back to cache on failure.
+ *
+ * Tries to fetch the request from the network (racing against a configurable timeout). If a network
+ * response is received and is OK, the response is timestamped, stored in the given cache, and
+ * cache size limits are enforced. If the network request fails or times out, a matching cached
+ * response (if any) is returned. If neither network nor cache yields a response, the returned
+ * promise rejects with the underlying error.
+ *
+ * @param {Request|string} request - The request to fetch or a URL string.
+ * @param {string} cacheName - Name of the cache to store successful network responses and to read fallbacks from.
+ * @param {number} [timeout=3000] - Milliseconds to wait for the network before treating it as a timeout.
+ * @return {Promise<Response>} Resolves with a Response from network or cache; rejects if both fail.
  */
 async function networkFirstStrategy(request, cacheName, timeout = 3000) {
   try {
@@ -201,7 +226,21 @@ async function networkFirstStrategy(request, cacheName, timeout = 3000) {
 }
 
 /**
- * Stale-while-revalidate strategy: Return cache immediately, update in background
+ * Stale-while-revalidate strategy: return a cached response immediately when available and valid,
+ * while fetching an updated response in the background to refresh the cache.
+ *
+ * If a cached response exists and is not expired (per isExpired), it is returned immediately and
+ * a network request runs in the background; a successful network response is timestamped,
+ * stored in the given cache, and then enforceMaxEntries is run for that cache.
+ *
+ * If there is no cached response or the cached entry is expired, this function waits for the
+ * network response, caches it on success, and returns it.
+ *
+ * @param {Request} request - The fetch request to satisfy and/or refresh.
+ * @param {string} cacheName - The name of the cache to read from and write to.
+ * @returns {Promise<Response|undefined>} A Response resolved from cache or network. May resolve
+ * to undefined if the network update fails and no cached response is available.
+ * @throws {Error} Propagates unexpected errors encountered while opening caches or performing operations.
  */
 async function staleWhileRevalidateStrategy(request, cacheName) {
   try {
@@ -236,7 +275,14 @@ async function staleWhileRevalidateStrategy(request, cacheName) {
 }
 
 /**
- * Add timestamp to response for expiration tracking
+ * Return a new Response identical to the given one but with an `sw-cached-at`
+ * header set to the current ISO timestamp for cache expiration tracking.
+ *
+ * The original Response is not modified; the function builds a new Response
+ * preserving status, statusText, headers (plus `sw-cached-at`) and body.
+ *
+ * @param {Response} response - The response to timestamp.
+ * @return {Response} A cloned Response with the `sw-cached-at` header added.
  */
 function addTimestamp(response) {
   const headers = new Headers(response.headers);
@@ -250,7 +296,17 @@ function addTimestamp(response) {
 }
 
 /**
- * Check if cached response is expired
+ * Determine whether a cached Response has expired according to cache configuration.
+ *
+ * Reads the `sw-cached-at` header on the given Response and compares it against
+ * the `maxAgeSeconds` for the provided cache name in CACHE_CONFIGS.
+ *
+ * If the response lacks the `sw-cached-at` header or the cache has no
+ * `maxAgeSeconds` configured, the function returns false (treats the entry as not expired).
+ *
+ * @param {Response} response - The cached Response object (may contain `sw-cached-at` header).
+ * @param {string} cacheName - The cache key used to look up `maxAgeSeconds` in CACHE_CONFIGS.
+ * @returns {boolean} True if the cached response is older than the configured max age; otherwise false.
  */
 function isExpired(response, cacheName) {
   const cachedAt = response.headers.get('sw-cached-at');
@@ -265,7 +321,14 @@ function isExpired(response, cacheName) {
 }
 
 /**
- * Enforce maximum entries in cache
+ * Trim a Cache to its configured maximum number of entries.
+ *
+ * If a maxEntries value is configured for the provided cacheName in CACHE_CONFIGS,
+ * deletes the oldest cached requests until the number of entries is at or below that limit.
+ *
+ * @param {Cache} cache - The Cache instance to trim.
+ * @param {string} cacheName - The key used to look up maxEntries in CACHE_CONFIGS.
+ * @returns {Promise<void>} Resolves once trimming is complete.
  */
 async function enforceMaxEntries(cache, cacheName) {
   const config = CACHE_CONFIGS[cacheName];
@@ -282,7 +345,11 @@ async function enforceMaxEntries(cache, cacheName) {
 }
 
 /**
- * Cleanup old caches from previous versions
+ * Remove outdated service worker caches.
+ *
+ * Determines the set of current cache names from CACHE_CONFIGS and deletes any caches whose name includes "cache" but is not present in the current configuration.
+ *
+ * @returns {Promise<void>} Resolves when all old caches have been removed.
  */
 async function cleanupOldCaches() {
   const cacheNames = await caches.keys();
@@ -299,7 +366,12 @@ async function cleanupOldCaches() {
 }
 
 /**
- * Cleanup expired entries from all caches
+ * Remove expired cached responses from all configured caches.
+ *
+ * Iterates through all caches whose names appear in CACHE_CONFIGS, checks each cached
+ * response with isExpired, and deletes entries whose responses are expired.
+ *
+ * @returns {Promise<void>} Resolves when cleanup is complete.
  */
 async function cleanupCaches() {
   const cacheNames = await caches.keys();
@@ -320,7 +392,16 @@ async function cleanupCaches() {
 }
 
 /**
- * Warm cache with specified URLs
+ * Preloads (warms) caches by fetching and storing a list of URLs.
+ *
+ * For each URL this function performs a fetch and, if the response is OK,
+ * selects a target cache based on URL patterns (static, api, fonts, images,
+ * otherwise pages), timestamps the response via addTimestamp, and stores it.
+ * The operation proceeds in parallel for all URLs and the function waits for
+ * all attempts to settle. Failures for individual URLs are caught and logged
+ * but do not reject the overall operation.
+ *
+ * @param {string[]} urls - Array of absolute or relative request URLs to warm.
  */
 async function warmCache(urls) {
   const promises = urls.map(async (url) => {
@@ -353,7 +434,16 @@ async function warmCache(urls) {
 }
 
 /**
- * Get cache status information
+ * Retrieve status information for all caches accessible to the service worker.
+ *
+ * Returns an array of cache status objects, each describing:
+ * - name: cache name.
+ * - entryCount: number of requests stored in the cache.
+ * - size: total size in bytes of readable cached response bodies (best-effort, skips unreadable entries).
+ * - lastAccessed: ISO timestamp when the status was generated.
+ *
+ * @return {Promise<Array<{name: string, entryCount: number, size: number, lastAccessed: string}>>}
+ *         A promise that resolves to the list of cache status objects.
  */
 async function getCacheStatus() {
   const cacheNames = await caches.keys();
