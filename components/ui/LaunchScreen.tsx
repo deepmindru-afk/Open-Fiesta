@@ -2,32 +2,57 @@
 
 import { useTheme } from '@/lib/themeContext';
 import { cn } from '@/lib/utils';
+import { isStandalone } from '@/lib/pwa-config';
 
 interface LaunchScreenProps {
-  backgroundClass: string;
+  backgroundClass?: string;
   title?: string;
   subtitle?: string;
   logoSrc?: string;
   dismissed?: boolean;
+  isPWA?: boolean;
 }
 
+/**
+ * A themable, accessible launch screen UI with optional branding and PWA standalone adjustments.
+ *
+ * Renders a full-screen centered status card with optional logo, title, subtitle, and a subtle
+ * progress sheen. Adapts colors for dark/light themes, supports hiding via `dismissed`, and when
+ * running as a PWA (or when `isPWA` is true) applies safe-area padding and a `pwa-launch-screen`
+ * class for standalone display.
+ *
+ * @param backgroundClass - Optional additional CSS classes applied to the outer container.
+ * @param title - Main heading text shown on the card (defaults to "Open Fiesta").
+ * @param subtitle - Subheading text shown below the title (defaults to "Warming things up…").
+ * @param logoSrc - URL for the brand/logo image; when falsy the logo block is omitted.
+ * @param dismissed - When true, reduces opacity and disables pointer events to hide the screen.
+ * @param isPWA - If provided, forces PWA standalone mode; otherwise standalone detection is used.
+ * @returns A React element representing the launch screen.
+ */
 export default function LaunchScreen({
-  backgroundClass,
+  backgroundClass = '',
   title = 'Open Fiesta',
   subtitle = 'Warming things up…',
   logoSrc = '/brand.svg',
   dismissed = false,
+  isPWA,
 }: LaunchScreenProps) {
   const { theme } = useTheme();
   const isDark = theme.mode === 'dark';
+  const isStandaloneMode = isPWA ?? isStandalone();
   return (
     <div
       className={cn(
         "min-h-screen w-full relative transition-opacity duration-300 ease-out",
         backgroundClass,
         isDark ? "text-white" : "text-gray-800",
-        dismissed ? 'opacity-0 pointer-events-none' : 'opacity-100'
+        dismissed ? 'opacity-0 pointer-events-none' : 'opacity-100',
+        isStandaloneMode && "pwa-launch-screen"
       )}
+      style={{
+        paddingTop: isStandaloneMode ? 'env(safe-area-inset-top)' : undefined,
+        paddingBottom: isStandaloneMode ? 'env(safe-area-inset-bottom)' : undefined,
+      }}
     >
       <div
         className={`absolute inset-0 z-0 pointer-events-none opacity-95 transition-opacity duration-300 ease-out ${dismissed ? 'opacity-0' : 'opacity-95'}`}
