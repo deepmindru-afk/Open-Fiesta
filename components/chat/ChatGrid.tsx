@@ -86,7 +86,7 @@ export default function ChatGrid({
       <div
         ref={scrollRef}
         className={cn(
-          "relative rounded-lg border px-3 lg:px-4 pt-2 overflow-x-auto flex-1 overflow-y-auto pb-28 sm:scroll-stable-gutter",
+          "relative rounded-lg border px-3 lg:px-4 pt-2 overflow-x-auto flex-1 overflow-y-auto pb-28 scroll-stable-gutter",
           isDark 
             ? "border-white/5 bg-white/5"
             : "border-black/10 bg-black/5"
@@ -284,7 +284,7 @@ export default function ChatGrid({
                         </div>
                       </div>
                     )}
-                    <div className="group flex gap-2 items-center justify-end sticky right-0 z-10">
+                    <div className="group flex gap-2 items-center justify-end sticky right-6 sm:right-8 z-10">
                       <div className="inline-flex items-center text-sm leading-relaxed px-3 py-3 rounded-md bg-[var(--accent-interactive-primary)] text-white shadow-[0_2px_10px_rgba(0,0,0,0.35)]">
                         <span className="truncate whitespace-pre-wrap break-words max-w-[68ch]">
                           {row.user.content}
@@ -339,7 +339,7 @@ export default function ChatGrid({
                           {/* decorative overlay removed for cleaner look */}
                           {ans && String(ans.content || '').length > 0 && (
                             <div
-                              className={`absolute top-2 right-2 z-10 flex flex-col gap-2 ${
+                              className={`absolute top-2 right-6 sm:right-8 z-10 flex flex-col gap-2 ${
                                 isCollapsed
                                   ? 'opacity-0 pointer-events-none'
                                   : 'opacity-0 group-hover:opacity-100'
