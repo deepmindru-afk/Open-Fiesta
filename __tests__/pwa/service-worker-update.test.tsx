@@ -20,7 +20,7 @@ describe('ServiceWorkerUpdate Component', () => {
   beforeEach(() => {
     mockOnUpdate = jest.fn();
     mockOnDismiss = jest.fn();
-    
+
     // Mock window.location.reload
     Object.defineProperty(window, 'location', {
       value: {
@@ -36,13 +36,13 @@ describe('ServiceWorkerUpdate Component', () => {
 
   it('should not render when no update is available', () => {
     render(<ServiceWorkerUpdate onUpdate={mockOnUpdate} onDismiss={mockOnDismiss} />);
-    
+
     expect(screen.queryByText('App Update Available')).not.toBeInTheDocument();
   });
 
   it('should render when update is available', async () => {
     render(<ServiceWorkerUpdate onUpdate={mockOnUpdate} onDismiss={mockOnDismiss} />);
-    
+
     // Simulate service worker update event
     act(() => {
       const updateEvent = new CustomEvent('sw-update', {
@@ -62,7 +62,7 @@ describe('ServiceWorkerUpdate Component', () => {
 
   it('should handle update button click', async () => {
     render(<ServiceWorkerUpdate onUpdate={mockOnUpdate} onDismiss={mockOnDismiss} />);
-    
+
     // Trigger update available
     act(() => {
       const updateEvent = new CustomEvent('sw-update', {
@@ -87,7 +87,7 @@ describe('ServiceWorkerUpdate Component', () => {
 
   it('should handle dismiss button click', async () => {
     render(<ServiceWorkerUpdate onUpdate={mockOnUpdate} onDismiss={mockOnDismiss} />);
-    
+
     // Trigger update available
     act(() => {
       const updateEvent = new CustomEvent('sw-update', {
@@ -112,7 +112,7 @@ describe('ServiceWorkerUpdate Component', () => {
 
   it('should handle close button click', async () => {
     render(<ServiceWorkerUpdate onUpdate={mockOnUpdate} onDismiss={mockOnDismiss} />);
-    
+
     // Trigger update available
     act(() => {
       const updateEvent = new CustomEvent('sw-update', {
@@ -137,7 +137,7 @@ describe('ServiceWorkerUpdate Component', () => {
 
   it('should reload page when update is applied', async () => {
     render(<ServiceWorkerUpdate onUpdate={mockOnUpdate} onDismiss={mockOnDismiss} />);
-    
+
     // Trigger update available first
     act(() => {
       const updateAvailableEvent = new CustomEvent('sw-update', {
@@ -165,14 +165,14 @@ describe('ServiceWorkerUpdate Component', () => {
 
   it('should handle service worker update error', async () => {
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
-    
-    // Mock the service worker manager to throw an error
+
+    // Mock the service worker manager to throw an error BEFORE rendering
     const { getServiceWorkerManager } = require('../../lib/service-worker');
     const mockManager = getServiceWorkerManager();
     mockManager.skipWaiting = jest.fn().mockRejectedValue(new Error('Update failed'));
 
     render(<ServiceWorkerUpdate onUpdate={mockOnUpdate} onDismiss={mockOnDismiss} />);
-    
+
     // Trigger update available
     act(() => {
       const updateEvent = new CustomEvent('sw-update', {
@@ -186,13 +186,16 @@ describe('ServiceWorkerUpdate Component', () => {
     });
 
     const updateButton = screen.getByRole('button', { name: 'Update' });
-    
     await act(async () => {
       fireEvent.click(updateButton);
     });
 
+    // Wait for error to be logged
     await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalledWith('Failed to update service worker:', expect.any(Error));
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Failed to update service worker:',
+        expect.any(Error),
+      );
     });
 
     // Should reset updating state
@@ -205,19 +208,19 @@ describe('ServiceWorkerUpdate Component', () => {
 
   it('should cleanup event listeners on unmount', () => {
     const removeEventListenerSpy = jest.spyOn(window, 'removeEventListener');
-    
+
     const { unmount } = render(<ServiceWorkerUpdate />);
-    
+
     unmount();
-    
+
     expect(removeEventListenerSpy).toHaveBeenCalledWith('sw-update', expect.any(Function));
-    
+
     removeEventListenerSpy.mockRestore();
   });
 
   it('should handle multiple update events correctly', async () => {
     render(<ServiceWorkerUpdate onUpdate={mockOnUpdate} onDismiss={mockOnDismiss} />);
-    
+
     // First update available
     act(() => {
       const updateEvent1 = new CustomEvent('sw-update', {
@@ -244,7 +247,7 @@ describe('ServiceWorkerUpdate Component', () => {
 
   it('should disable update button while updating', async () => {
     render(<ServiceWorkerUpdate onUpdate={mockOnUpdate} onDismiss={mockOnDismiss} />);
-    
+
     // Trigger update available
     act(() => {
       const updateEvent = new CustomEvent('sw-update', {

@@ -55,7 +55,7 @@ Object.defineProperty(window, 'getComputedStyle', {
 describe('usePWAUI', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    
+
     // Setup default matchMedia mock
     mockMatchMedia.mockImplementation((query: string) => ({
       matches: false,
@@ -186,19 +186,20 @@ describe('usePWAUI', () => {
   });
 
   it('should calculate viewport height for standalone mode', async () => {
+    // Set the mock before using the hook
     const { isStandalone } = await import('@/lib/pwa-config');
     (isStandalone as jest.Mock).mockReturnValue(true);
 
     // Mock getComputedStyle to return safe area insets
     const originalGetComputedStyle = window.getComputedStyle;
     window.getComputedStyle = jest.fn(() => ({
-      getPropertyValue: jest.fn((prop: string) => {
+      getPropertyValue: (prop: string) => {
         if (prop === 'env(safe-area-inset-top)') return '20px';
         if (prop === 'env(safe-area-inset-bottom)') return '10px';
         if (prop === 'env(safe-area-inset-left)') return '0px';
         if (prop === 'env(safe-area-inset-right)') return '0px';
-        return '';
-      }),
+        return '0px';
+      },
     })) as any;
 
     const { result } = renderHook(() => usePWAUI());
@@ -224,7 +225,7 @@ describe('usePWAUI', () => {
   it('should determine when to show install prompt', async () => {
     // Clear any existing deferredPrompt
     (window as any).deferredPrompt = null;
-    
+
     const { result } = renderHook(() => usePWAUI());
 
     await waitFor(() => {
@@ -238,8 +239,9 @@ describe('usePWAUI', () => {
 
     // Simulate beforeinstallprompt event
     act(() => {
-      const beforeInstallPromptHandler = mockAddEventListener.mock.calls
-        .find(call => call[0] === 'beforeinstallprompt')?.[1];
+      const beforeInstallPromptHandler = mockAddEventListener.mock.calls.find(
+        (call) => call[0] === 'beforeinstallprompt',
+      )?.[1];
       if (beforeInstallPromptHandler) {
         beforeInstallPromptHandler({ preventDefault: jest.fn() });
       }
@@ -286,8 +288,12 @@ describe('usePWAUI', () => {
     const { result } = renderHook(() => usePWAUI());
 
     // Verify event listeners are added (with passive option)
-    expect(mockAddEventListener).toHaveBeenCalledWith('orientationchange', expect.any(Function), { passive: true });
-    expect(mockAddEventListener).toHaveBeenCalledWith('resize', expect.any(Function), { passive: true });
+    expect(mockAddEventListener).toHaveBeenCalledWith('orientationchange', expect.any(Function), {
+      passive: true,
+    });
+    expect(mockAddEventListener).toHaveBeenCalledWith('resize', expect.any(Function), {
+      passive: true,
+    });
 
     // Simulate orientation change
     Object.defineProperty(window, 'innerHeight', {
@@ -299,8 +305,9 @@ describe('usePWAUI', () => {
       value: 800,
     });
 
-    const orientationHandler = mockAddEventListener.mock.calls
-      .find(call => call[0] === 'orientationchange')?.[1];
+    const orientationHandler = mockAddEventListener.mock.calls.find(
+      (call) => call[0] === 'orientationchange',
+    )?.[1];
 
     if (orientationHandler) {
       act(() => {
@@ -317,8 +324,9 @@ describe('usePWAUI', () => {
     const { result } = renderHook(() => usePWAUI());
 
     const mockEvent = { preventDefault: jest.fn() };
-    const beforeInstallPromptHandler = mockAddEventListener.mock.calls
-      .find(call => call[0] === 'beforeinstallprompt')?.[1];
+    const beforeInstallPromptHandler = mockAddEventListener.mock.calls.find(
+      (call) => call[0] === 'beforeinstallprompt',
+    )?.[1];
 
     if (beforeInstallPromptHandler) {
       act(() => {
@@ -341,8 +349,9 @@ describe('usePWAUI', () => {
       expect(result.current.isInstallable).toBe(true);
     });
 
-    const appInstalledHandler = mockAddEventListener.mock.calls
-      .find(call => call[0] === 'appinstalled')?.[1];
+    const appInstalledHandler = mockAddEventListener.mock.calls.find(
+      (call) => call[0] === 'appinstalled',
+    )?.[1];
 
     if (appInstalledHandler) {
       act(() => {
@@ -363,7 +372,10 @@ describe('usePWAUI', () => {
 
     expect(mockRemoveEventListener).toHaveBeenCalledWith('orientationchange', expect.any(Function));
     expect(mockRemoveEventListener).toHaveBeenCalledWith('resize', expect.any(Function));
-    expect(mockRemoveEventListener).toHaveBeenCalledWith('beforeinstallprompt', expect.any(Function));
+    expect(mockRemoveEventListener).toHaveBeenCalledWith(
+      'beforeinstallprompt',
+      expect.any(Function),
+    );
     expect(mockRemoveEventListener).toHaveBeenCalledWith('appinstalled', expect.any(Function));
   });
 });
