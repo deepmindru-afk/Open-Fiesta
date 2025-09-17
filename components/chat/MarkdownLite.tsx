@@ -45,7 +45,7 @@ import { Download } from 'lucide-react';
 import { ACCENT_UTILITY_CLASSES } from '../../lib/accentColors';
 import { useTheme } from '@/lib/themeContext';
 import { cn } from '@/lib/utils';
-
+import { CopyToClipboard } from '@/components/ui/CopyToClipboard';
 type Props = { text: string };
 
 // Minimal, dependency-free Markdown renderer focusing on bold, italics and inline code.
@@ -283,7 +283,7 @@ const AudioPlayer = ({ audioUrl, filename, isDark }: { audioUrl: string; filenam
       }
       setCanPlay(true);
       await el.play();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (e: any) {
       // Swallow AbortError which can occur if a new load interrupts play()
       if (e && e.name === 'AbortError') {
@@ -559,7 +559,7 @@ const AudioPlayer = ({ audioUrl, filename, isDark }: { audioUrl: string; filenam
 export default function MarkdownLite({ text }: Props) {
   const { theme } = useTheme();
   const isDark = theme.mode === 'dark';
-  
+
   if (!text) return null;
 
   // Check for audio content first (supports multiple formats)
@@ -613,17 +613,27 @@ export default function MarkdownLite({ text }: Props) {
     )}>
       {blocks.map((b, i) =>
         b.type === 'code' ? (
-          <pre
-            key={i}
-            className={cn(
-              "my-2 rounded border p-2 overflow-x-auto text-xs",
-              isDark 
-                ? "bg-black/40 border-white/10"
-                : "bg-gray-100/60 border-gray-300/40"
-            )}
-          >
-            <code>{maybeDeescapeJsonish(b.content)}</code>
-          </pre>
+          <div key={i} className="relative group">
+            <pre
+              className={cn(
+                "my-2 rounded border p-2 overflow-x-auto text-xs pr-10",
+                isDark
+                  ? "bg-black/40 border-white/10"
+                  : "bg-gray-100/60 border-gray-300/40"
+              )}
+            >
+              <code>{maybeDeescapeJsonish(b.content)}</code>
+            </pre>
+            <CopyToClipboard
+              getText={() => maybeDeescapeJsonish(b.content)}
+              className={cn(
+                "absolute top-2 right-2 p-1 rounded-md transition-opacity opacity-0 group-hover:opacity-100 shadow-sm"
+              )}
+              iconSize={14}
+              timeout={1200}
+              title="Copy code"
+            />
+          </div>
         ) : (
           // For non-code text, clean simple math delimiters like \( \) \[ \] and $...$
           <BlockRenderer key={i} text={sanitizeMath(b.content)} isDark={isDark} />
@@ -1029,7 +1039,7 @@ function BlockRenderer({ text, isDark }: { text: string; isDark: boolean }) {
           key={`h-${i}`}
           className={`mt-2 mb-1 font-semibold tracking-tight ${
             level <= 2 ? 'text-base md:text-lg' : level === 3 ? 'text-sm md:text-base' : 'text-sm'
-          }`}
+            }`}
         >
           {renderInline(content, isDark)}
         </Tag>,
@@ -1048,7 +1058,7 @@ function BlockRenderer({ text, isDark }: { text: string; isDark: boolean }) {
       nodes.push(
         <div key={`q-${i}`} className={cn(
           "my-2 px-3 py-2 rounded-md border",
-          isDark 
+          isDark
             ? "border-white/10 bg-white/5"
             : "border-gray-300/30 bg-gray-100/40"
         )}>
@@ -1066,7 +1076,7 @@ function BlockRenderer({ text, isDark }: { text: string; isDark: boolean }) {
           key={`tbl-${i}`}
           className={cn(
             "my-2 overflow-x-auto rounded-lg ring-1 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] p-2",
-            isDark 
+            isDark
               ? "ring-white/20 bg-gradient-to-b from-black/40 to-black/20"
               : "ring-gray-300/30 bg-gradient-to-b from-white/40 to-gray-50/20"
           )}
@@ -1240,7 +1250,7 @@ function parseTable(
               key={hi}
               className={cn(
                 "text-left font-semibold border px-3 py-1.5",
-                isDark 
+                isDark
                   ? "text-zinc-100 bg-black/30 border-white/15"
                   : "text-gray-800 bg-gray-100/60 border-gray-300/40"
               )}
@@ -1258,7 +1268,7 @@ function parseTable(
                 key={ci}
                 className={cn(
                   "align-top border px-3 py-1.5 whitespace-pre-wrap",
-                  isDark 
+                  isDark
                     ? "border-white/15 text-zinc-200"
                     : "border-gray-300/40 text-gray-700"
                 )}
