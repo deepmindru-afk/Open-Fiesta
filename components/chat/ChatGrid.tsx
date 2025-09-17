@@ -32,6 +32,27 @@ export type ChatGridProps = {
   onToggle: (id: string) => void;
 };
 
+/**
+ * Renders a scrollable comparison grid of AI model responses for a sequence of user turns.
+ *
+ * The component shows a header row of selected models (with pro/free badges and controls to toggle
+ * or collapse each model), followed by a list of turns where each turn displays the user's prompt
+ * and one cell per selected model containing that model's answer (or a loading/empty state).
+ *
+ * Key behaviors:
+ * - Dynamically computes the grid template (headerTemplate prop overrides automatic layout). If exactly
+ *   one model is expanded, that model receives flexible width while collapsed models get a fixed 60px.
+ * - Supports collapsing/expanding individual model columns via setCollapsedIds; collapsed columns render
+ *   a compact view and can be expanded by clicking.
+ * - Supports editing and deleting user prompts (onEditUser, onDeleteUser). Editing is inline with Save/Cancel
+ *   and keyboard handlers (Enter to save, Esc to cancel).
+ * - Auto-scrolls to the bottom when `pairs` changes.
+ * - Per-answer features: sanitized Markdown rendering, copy to clipboard, open-in-fullscreen modal,
+ *   token usage footer (when present), provider-specific warnings (e.g., OpenRouter 503), and prompts
+ *   to add API keys when detected in content.
+ *
+ * @returns A React element containing the chat comparison grid and related dialogs/modals.
+ */
 export default function ChatGrid({
   selectedModels,
   headerTemplate,
