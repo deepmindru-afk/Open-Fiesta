@@ -39,13 +39,14 @@ function normalizeTableLikeMarkdown(lines: string[]): string[] {
   return out;
 }
 
-import React, { useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
-import { Download } from 'lucide-react';
-import { ACCENT_UTILITY_CLASSES } from '../../lib/accentColors';
+import { CopyToClipboard } from '@/components/ui/CopyToClipboard';
 import { useTheme } from '@/lib/themeContext';
 import { cn } from '@/lib/utils';
-import { CopyToClipboard } from '@/components/ui/CopyToClipboard';
+import { Download } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { ACCENT_UTILITY_CLASSES } from '../../lib/accentColors';
+import CodeBlock from './CodeBlock';
 type Props = { text: string };
 
 // Minimal, dependency-free Markdown renderer focusing on bold, italics and inline code.
@@ -614,16 +615,12 @@ export default function MarkdownLite({ text }: Props) {
       {blocks.map((b, i) =>
         b.type === 'code' ? (
           <div key={i} className="relative group">
-            <pre
-              className={cn(
+            <CodeBlock code={maybeDeescapeJsonish(b.content)} className={cn(
                 "my-2 rounded border p-2 overflow-x-auto text-xs pr-10",
                 isDark
                   ? "bg-black/40 border-white/10"
                   : "bg-gray-100/60 border-gray-300/40"
-              )}
-            >
-              <code>{maybeDeescapeJsonish(b.content)}</code>
-            </pre>
+              )} />
             <CopyToClipboard
               getText={() => maybeDeescapeJsonish(b.content)}
               className={cn(
