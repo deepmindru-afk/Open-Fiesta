@@ -34,7 +34,7 @@ export const CopyToClipboard = ({
       className={cn(
         `icon-btn h-7 w-7 cursor-pointer ${
           state === 'copied'
-            ? 'bg-emerald-500/15 border-emerald-300/30 text-emerald-100'
+            ? 'bg-emerald-500/15 border-emerald-300/30'
             : state === 'failed'
               ? 'bg-red-500/15 border-red-300/30 text-red-100'
               : ''
@@ -46,7 +46,7 @@ export const CopyToClipboard = ({
       {state === 'idle' ? (
         <CopyIcon size={iconSize} />
       ) : state === 'copied' ? (
-        <CheckIcon size={iconSize} />
+        <CheckIcon size={iconSize} color='currentColor' />
       ) : (
         <XIcon size={iconSize} />
       )}

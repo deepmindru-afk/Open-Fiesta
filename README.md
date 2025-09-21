@@ -44,7 +44,7 @@ npm i
    Copy the example environment file:
 
 ```bash
-cp .env.example .env
+cp env.example .env
 ```
 
 Then set the environment variables you plan to use. You can also enter keys at runtime in the app's Settings.

@@ -187,6 +187,16 @@ export const MODEL_CATALOG: AiModel[] = [
     category: 'text',
   },
   {
+    id: 'openai-gpt-5-nano',
+    label: 'OpenAI GPT-5 Nano',
+    provider: 'openrouter',
+    model: 'openai/gpt-5-nano',
+    good: true,
+    tags: ['new', 'multimodal', 'vision'],
+    category: 'image',
+    // OpenRouter models require API key (BYOK)
+  },
+  {
     id: 'xai-grok-3-mini',
     label: 'xAI Grok 3 Mini',
     provider: 'openrouter',

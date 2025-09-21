@@ -680,49 +680,63 @@
 /* Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--accent-primary) var(--accent-bg-secondary);
+  scrollbar-color: #333333 #000000;
 }
 /* Utility to hide scrollbars when desired */
-.no-scrollbar {
-  scrollbar-width: none;
+/* Strong no-scrollbar utility (affects element and its descendants) */
+.no-scrollbar,
+html.no-scrollbar,
+body.no-scrollbar {
+  scrollbar-width: none !important; /* Firefox */
 }
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
+html.no-scrollbar::-webkit-scrollbar,
+body.no-scrollbar::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar,
+html.no-scrollbar *::-webkit-scrollbar,
+body.no-scrollbar *::-webkit-scrollbar,
+.no-scrollbar *::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
+  background: transparent !important;
+}
+html.no-scrollbar *::-webkit-scrollbar-thumb,
+body.no-scrollbar *::-webkit-scrollbar-thumb,
+.no-scrollbar *::-webkit-scrollbar-thumb {
+  background: transparent !important;
+  border: none !important;
 }
 body.light * {
-  scrollbar-color: var(--accent-secondary) var(--accent-bg-secondary);
+  scrollbar-color: #333333 #000000;
 }
 
 /* WebKit (Chrome/Safari/Edge) */
 *::-webkit-scrollbar {
   width: 10px;
+  background-color: #000000;
   height: 10px;
 }
 *::-webkit-scrollbar-track {
-  background: var(--accent-bg-secondary);
+  background: #000000;
   border-radius: 9999px;
 }
 *::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, var(--accent-primary), var(--accent-secondary));
+  background: #333333 !important;
   border-radius: 9999px;
   border: 2px solid rgba(0, 0, 0, 0.25); /* creates inner gap */
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08) inset;
-  transition:
-    background 0.25s ease,
-    box-shadow 0.25s ease;
+  box-shadow: none !important;
 }
 .light *::-webkit-scrollbar-thumb {
-  border-color: rgba(255, 255, 255, 0.4);
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08) inset;
+  background: #333333 !important;
+  border-color: rgba(0, 0, 0, 0.25);
+  box-shadow: none !important;
 }
 *::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, var(--accent-secondary), var(--accent-tertiary));
-  box-shadow:
-    0 0 0 1px var(--accent-interactive-focus) inset,
-    0 0 6px 1px var(--accent-glow-soft);
+  background: #444444 !important;
+  box-shadow: none !important;
 }
 *::-webkit-scrollbar-corner {
-  background: transparent;
+  background: #000000 !important;
 }
 
 /* Additional Accent Utilities for unified theming */
@@ -1092,6 +1106,24 @@ body.light * {
 }
 .model-toggle-pill[data-active='true'] .model-toggle-thumb {
   transform: translateX(0.9rem);
+}
+
+/* Marquee animations for Testimonials */
+@keyframes marquee-x {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes marquee-y {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+.animate-marquee {
+  animation: marquee-x var(--duration, 40s) linear infinite;
+  will-change: transform;
+}
+.animate-marquee-vertical {
+  animation: marquee-y var(--duration, 40s) linear infinite;
+  will-change: transform;
 }
 
 /* AI Chat Box toolbar background */
