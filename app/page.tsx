@@ -96,7 +96,7 @@ export default function StartupSprintLanding() {
       <nav className="flex items-center justify-between px-6 pt-7 relative max-w-7xl mx-auto z-10">
         <div className="flex items-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/Web_logo.svg" alt="Open Fiesta" className="h-10 md:h-12 lg:h-14 w-auto" />
+          <img src="/Web_logo.svg" alt="Portal" className="h-10 md:h-12 lg:h-14 w-auto" />
         </div>
 
         <div className="hidden md:flex items-center gap-8">
@@ -107,7 +107,7 @@ export default function StartupSprintLanding() {
         </div>
 
         <div className="hidden md:flex items-center gap-3">
-          <GithubStar owner="NiladriHazra" repo="Open-Fiesta" theme="dark" />
+          <GithubStar owner="sorokinvld" repo="Portal" theme="dark" />
           <SupportDropdown inline theme={'dark'} />
         </div>
 
@@ -211,7 +211,7 @@ export default function StartupSprintLanding() {
         <div className="flex items-center gap-3 mt-8">
           {/* Creator avatar only */}
           <a
-            href="https://x.com/byteHumi"
+            href="https://www.portalos.ru"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Niladri on X"
@@ -223,14 +223,14 @@ export default function StartupSprintLanding() {
 
           {/* Social icons */}
           <a
-            href="https://x.com/byteHumi"
+            href="https://www.portalos.ru"
              target="_blank"
             className="w-10 h-10 bg-white/10 rounded-2xl flex items-center justify-center hover:bg-gray-900/80 transition-colors"
           >
             <img src="https://i.postimg.cc/HLTCxTsr/twitter.png" className="w-5 h-5" />
           </a>
           <a
-            href="https://github.com/NiladriHazra"
+            href="https://www.portalos.ru"
              target="_blank"
             className="w-10 h-10 bg-white/10 rounded-2xl flex items-center justify-center hover:bg-gray-900/80 transition-colors"
           >
@@ -275,7 +275,7 @@ export default function StartupSprintLanding() {
         className="text-[clamp(2.25rem,18vw,20rem)] text-white uppercase tracking-[0.06em] leading-none select-none animate-pulse text-center whitespace-nowrap max-w-full"
         style={{ fontFamily: 'Impact, "Arial Black", "Franklin Gothic Bold", Charcoal, "Helvetica Inserat", "Bitstream Vera Sans Bold", "Arial Bold", sans-serif', fontWeight: 900, fontStretch: 'condensed' }}
       >
-        OPEN FIESTA
+        PORTAL
       </h1>
     </div>
     
