@@ -37,7 +37,7 @@ export default function SharedChatRoute() {
         setError('Invalid or corrupted share link');
         setLoading(false);
         
-        // Log decode failure
+        // Log decode failure mm
         if (process.env.NODE_ENV === 'production') {
           fetch('/api/metrics', {
             method: 'POST',
