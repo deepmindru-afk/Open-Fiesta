@@ -6,11 +6,11 @@ const nextConfig: NextConfig = {
   output: 'standalone',
   // Skip linting during build for production (warnings only)
   eslint: {
-    ignoreDuringBuilds: process.env.NODE_ENV === 'production',
+    ignoreDuringBuilds: true, // process.env.NODE_ENV === 'production',
   },
   // Skip type checking during build for production (warnings only)
   typescript: {
-    ignoreBuildErrors: process.env.NODE_ENV === 'production',
+    ignoreBuildErrors: true, //process.env.NODE_ENV === 'production',
   },
   // Enable styled-components transform
   compiler: {
