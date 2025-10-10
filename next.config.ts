@@ -26,7 +26,16 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_APP_URL: process.env.APP_URL || 'http://localhost:3000',
     NEXT_PUBLIC_SHARE_URL_BASE: process.env.SHARE_URL_BASE || process.env.APP_URL || 'http://localhost:3000',
   },
-  
+  webpack: (config, { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }) => {
+    // Important: return the modified config
+    config.module.rules.push({
+      test: /\.mjs$/,
+      enforce: 'pre',
+      use: ['source-map-loader'],
+    });
+
+    return config;
+  },
   // Security headers and CORS configuration for production
   async headers() {
     const isProduction = process.env.NODE_ENV === 'production';
