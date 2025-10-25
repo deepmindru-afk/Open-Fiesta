@@ -39,13 +39,13 @@ function normalizeTableLikeMarkdown(lines: string[]): string[] {
   return out;
 }
 
-import React, { useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
-import { Download } from 'lucide-react';
-import { ACCENT_UTILITY_CLASSES } from '../../lib/accentColors';
+import { CopyToClipboard } from '@/components/ui/CopyToClipboard';
 import { useTheme } from '@/lib/themeContext';
 import { cn } from '@/lib/utils';
-import { CopyToClipboard } from '@/components/ui/CopyToClipboard';
+import { Download } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { ACCENT_UTILITY_CLASSES } from '../../lib/accentColors';
 type Props = { text: string };
 
 // Minimal, dependency-free Markdown renderer focusing on bold, italics and inline code.

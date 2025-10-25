@@ -1228,6 +1228,9 @@ body.light * {
   animation: img-breathe 3s ease-in-out infinite;
 }
 
+/* Import CodeBlock styles */
+@import '../components/chat/CodeBlockStyle.module.css';
+
 /* Import MessageDisplay styles */
 @import '../components/chat/MessageDisplay.module.css';
 .img-ripple {
