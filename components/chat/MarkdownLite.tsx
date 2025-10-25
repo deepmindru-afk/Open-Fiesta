@@ -46,7 +46,6 @@ import { Download } from 'lucide-react';
 import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ACCENT_UTILITY_CLASSES } from '../../lib/accentColors';
-import CodeBlock from './CodeBlock';
 type Props = { text: string };
 
 // Minimal, dependency-free Markdown renderer focusing on bold, italics and inline code.
@@ -615,12 +614,16 @@ export default function MarkdownLite({ text }: Props) {
       {blocks.map((b, i) =>
         b.type === 'code' ? (
           <div key={i} className="relative group">
-            <CodeBlock code={maybeDeescapeJsonish(b.content)} className={cn(
+            <pre
+              className={cn(
                 "my-2 rounded border p-2 overflow-x-auto text-xs pr-10",
                 isDark
                   ? "bg-black/40 border-white/10"
                   : "bg-gray-100/60 border-gray-300/40"
-              )} />
+              )}
+            >
+              <code>{maybeDeescapeJsonish(b.content)}</code>
+            </pre>
             <CopyToClipboard
               getText={() => maybeDeescapeJsonish(b.content)}
               className={cn(
